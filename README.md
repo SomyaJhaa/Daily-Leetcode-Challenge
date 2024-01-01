@@ -1,4 +1,4 @@
-# Leetcode Daily Challenge Solutions
+# Daily Leetcode Challenge Solutions
 
 This is my attemp to make the coding experience easier for you guys so that you can easily learn what to do in today's leetcode challenge.
 
