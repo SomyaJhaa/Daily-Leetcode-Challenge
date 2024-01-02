@@ -1,4 +1,4 @@
-# Leetcode Daily Challenge Solutions
+# Daily Leetcode Challenge Solutions
 
 A attemp by me to apply my skills to help coding community.
 
