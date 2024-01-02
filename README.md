@@ -1,7 +1,6 @@
 # Leetcode Daily Challenge Solutions
 
-This is my attemp to make the coding experience easier for you guys so that you can easily learn what to do in today's leetcode challenge.
-
+A attemp by me to apply my skills to help coding community.
 
 ## Always here to assist you guys.
 
