@@ -22,7 +22,7 @@ Binary search
 Return the length of the LIS.
 
 # Complexity
-- Time complexity:$$O(nlogn)$$
+- Time complexity: $$O(nlogn)$$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
 - Space complexity: $$O(n)$$
