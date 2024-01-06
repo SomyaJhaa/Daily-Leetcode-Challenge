@@ -4,47 +4,58 @@ An attempt by me to apply my skills to help coding community.
 
 ## Always here to assist you guys.
 
-## Today's 05-01-24 [Problem Link](https://leetcode.com/problems/longest-increasing-subsequence/description/)
+## Today's 06-01-24 
+## [1235. Maximum Profit in Job Scheduling](https://leetcode.com/problems/maximum-profit-in-job-scheduling/description/)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-Binary search
+The given code is an implementation of a dynamic programming solution to the job scheduling problem. The goal is to find the maximum profit by selecting non-overlapping jobs from a list of jobs, where each job is represented by its start time, end time, and profit.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-- Initialize an empty vector lis to represent the current LIS.
-- Iterate through each element num in the input array nums.
-- For each element, check if the lis is empty or if the current element is greater than the last element of lis. If true, append the current element to lis.
-- If the current element is not greater than the last element of lis, - find the position where the current element can be inserted in lis while maintaining the sorted order. This can be done using the lower_bound function.
-- Replace the element at the found position with the current element.
-- Continue this process for all elements in nums.
-- The size of the final lis vector represents the length of the LIS.
-Return the length of the LIS.
+The jobScheduling function sorts the jobs based on their start times and then calls the findMaxProfit function to recursively find the maximum profit. The findMaxProfit function uses memoization (dynamic programming) to avoid redundant computations and optimize the solution.
+
+For each job, the algorithm considers two cases:
+
+- Exclude the current job (id): In this case, the function recursively calls itself with the next job (id + 1).
+- Include the current job (id): The function calculates the profit of the current job and adds it to the profit obtained by considering the next non-overlapping job. The index of the next non-overlapping job is found using lower_bound on the sorted start times.
+The maximum profit between these two cases is stored in the dp array to avoid redundant computations.
 
 # Complexity
 - Time complexity: $$O(nlogn)$$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
 - Space complexity: $$O(n)$$
-<!-- Add your space complexity here, e.g. $$O(n)$$ --> 
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
 class Solution {
 public:
-    int lengthOfLIS(vector<int>& nums) {
-        vector<int> lis;
+    int dp[50001];
 
-        for (int num : nums) {
-            if (lis.empty() || num > lis.back()) {
-                lis.push_back(num);
-            } else {
-                auto it = lower_bound(lis.begin(), lis.end(), num);
-                *it = num;
-            }
+    int findMaxProfit(vector<vector<int>>& jobs, vector<int>& start, int n, int id) {
+        if(id == n) return 0;
+        if(dp[id] != -1) return dp[id];
+
+        int nextIndex = lower_bound(start.begin(), start.end(), jobs[id][1]) - start.begin();
+
+        int maxProfit = max(findMaxProfit(jobs, start, n, id + 1), jobs[id][2] + findMaxProfit(jobs, start, n, nextIndex));
+        return dp[id] = maxProfit;
+    }
+    int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
+        vector<vector<int>> jobs;
+        memset(dp, -1, sizeof(dp));
+
+        for(int i =0; i< profit.size(); i++) {
+            jobs.push_back({startTime[i], endTime[i], profit[i]});
         }
+        sort(jobs.begin(), jobs.end());
 
-        return lis.size();
+        for(int i =0; i< profit.size(); i++) {
+            startTime[i] = jobs[i][0];
+        }
+        return findMaxProfit(jobs, startTime, profit.size(),0);
     }
 };
 ```
