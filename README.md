@@ -41,7 +41,7 @@ Let's take an example: nums = [2, 4, 6, 8, 10].
 - Time complexity: $$O(n^2)$$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
-- Space complexity: $$ O(n^2) $$
+- Space complexity: $$O(n^2)$$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
