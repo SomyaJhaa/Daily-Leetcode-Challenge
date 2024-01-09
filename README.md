@@ -36,7 +36,7 @@ The algorithm employs a stack-based DFS traversal to obtain leaf values in a lef
 - where M - number of nodes in root 2
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
-- Space complexity:$O(max(N,M))$
+- Space complexity: $O(max(N,M))$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
