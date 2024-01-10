@@ -36,10 +36,10 @@ My approach involves using a breadth-first search (BFS) algorithm to traverse th
    - The result is the `minute` variable minus 1, which represents the amount of time it takes to reach all nodes.
  
 # Complexity
-- Time complexity: $$O(n)$$
+- Time complexity: $O(n)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
-- Space complexity: $$O(n)$$
+- Space complexity: $O(n)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
