@@ -4,42 +4,45 @@ An attempt by me to apply my skills to help coding community.
 
 ## Always here to assist you guys.
 
-## Today's 10-01-24 
-## [2385. Amount of Time for Binary Tree to Be Infected](https://leetcode.com/problems/amount-of-time-for-binary-tree-to-be-infected/description/?envType=daily-question&envId=2024-01-10)
+## Today's 11-01-24 
+## [1026. Maximum Difference Between Node and Ancestor](https://leetcode.com/problems/maximum-difference-between-node-and-ancestor/description/?envType=daily-question&envId=2024-01-11)
+
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-My approach involves using a breadth-first search (BFS) algorithm to traverse the tree level by level, keeping track of the visited nodes. An unordered map is used to represent an adjacency list to store the relationships between nodes.
+To find the maximum absolute difference between the values of any ancestor and its descendant, we need to explore the entire binary tree. We can achieve this by performing a depth-first search (DFS) on the tree. During the traversal, we need to keep track of the minimum and maximum values encountered in the path from the root to the current node.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
+1. We define a recursive function `maxD` that takes a node, the maximum value encountered so far (`maxV`), and the minimum value encountered so far (`minVal`).
+2. In the `maxD` function, if the current node is `nullptr`, we return the difference between the maximum and minimum values encountered in the path (`maxV - minVal`).
+3. Otherwise, we update `maxV` and `minVal` based on the current node's value.
+4. We then recursively call `maxD` for the left and right children of the current node, passing the updated `maxV` and `minVal`.
+5. The final result is the maximum of the results obtained from the left and right subtrees.
 
-1. **Initialization:**
-   - Create an unordered map (`gr`) to represent an adjacency list, where each node is associated with its neighboring nodes.
-   - Define a helper function `convert` to build the adjacency list.
+The `maxAncestorDiff` function initializes the process with the root node by calling `maxD(root, root->val, root->val)`.
 
-2. **BFS Traversal:**
-   - Start BFS from the given node (`start`) by using a queue (`q`) to store nodes at each level.
-   - Initialize the `minute` variable to 0, representing the time taken to reach nodes.
-   - Use a set (`visited`) to keep track of visited nodes and avoid revisiting them.
+**Example:**
+Consider the given example with the root values `[8,3,10,1,6,null,14,null,null,4,7,13]`. The DFS traversal may look like this:
 
-3. **BFS Loop:**
-   - While the queue is not empty, dequeue nodes from the front and process them.
-   - For each dequeued node, enqueue its neighboring nodes into the queue if they haven't been visited yet.
-   - Mark the dequeued node as visited.
+- Starting with root (8), `maxD(8, 8, 8)`
+  - Left child (3): `maxD(3, 8, 3)`
+    - Left child (1): `maxD(1, 8, 1)` (update maxV to 8, minVal to 1)
+    - Right child (6): `maxD(6, 8, 1)` (update maxV to 8, minVal to 1)
+      - Left child (4): `maxD(4, 8, 1)` (update maxV to 8, minVal to 1)
+      - Right child (7): `maxD(7, 8, 1)` (update maxV to 8, minVal to 1)
+  - Right child (10): `maxD(10, 10, 3)`
+    - Right child (14): `maxD(14, 14, 3)`
+      - Left child (13): `maxD(13, 14, 3)` (update maxV to 14, minVal to 3) 
 
-4. **Counting Levels:**
-   - After processing all nodes at a level, increment the `minute` variable to represent the time taken to reach that level.
-   - Continue the BFS until all nodes are visited.
 
-5. **Result:**
-   - The result is the `minute` variable minus 1, which represents the amount of time it takes to reach all nodes.
- 
 # Complexity
 - Time complexity: $O(n)$
+- n = number of nodes
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
-- Space complexity: $O(n)$
+- Space complexity: $O(h)$
+- h = height of the tree
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
@@ -57,42 +60,22 @@ My approach involves using a breadth-first search (BFS) algorithm to traverse th
  */
 class Solution {
 public:
-    int amountOfTime(TreeNode* root, int start) {
-        unordered_map<int, vector<int>> gr;
-        convert(root, 0, gr);
-        queue<int> q;
-        q.push(start);
-        int minute = 0;
-        unordered_set<int> visited;
-        visited.insert(start);
+    int maxDiff(TreeNode* node, int maxVal, int minVal) {
+        if(node == nullptr) return maxVal - minVal;
 
-        while(!q.empty()) {
-            int sz = q.size();
-            while(sz--) {
-                int node = q.front();
-                q.pop();
+        maxVal = max(maxVal, node -> val);
+        minVal = min(minVal, node -> val);
 
-                for(int child : gr[node]) {
-                    if(visited.find(child) == visited.end()) {
-                        visited.insert(child);
-                        q.push(child);
-                    }
-                }
-            }
-            minute++;
-        }
-        return minute - 1;
+        int maxLeftDiff = maxDiff(node-> left, maxVal, minVal);
+        int maxRightDiff = maxDiff(node-> right, maxVal, minVal);
+
+        return max(maxLeftDiff, maxRightDiff);
     }
-    void convert(TreeNode* node, int parent, unordered_map<int, vector<int>>& gr) {
-        if (node == nullptr) return;
-
-        vector<int>& adjacentList = gr[node -> val];
-        if (parent != 0) adjacentList.push_back(parent);
-        if(node -> left != nullptr) adjacentList.push_back(node->left -> val);
-         if(node -> right != nullptr) adjacentList.push_back(node->right -> val);
-
-         convert(node -> left , node -> val, gr);
-         convert(node -> right , node -> val, gr);
+    
+    int maxAncestorDiff(TreeNode* root) {
+        if(root == nullptr) return 0;
+        return maxDiff(root, root -> val, root -> val);
+        
     }
 };
 ```
