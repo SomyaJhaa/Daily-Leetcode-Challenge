@@ -37,11 +37,12 @@ The approach leverages the fact that if two strings are anagrams, they should ha
 The time complexity of the code is O(N), where N is the length of the input strings `s` and `t`. The code iterates through the strings once in the first loop (where N is the length of the strings), and then it iterates through the frequency map, which can have at most 26 entries (for the 26 lowercase English letters). Both of these loops have a linear time complexity, making the overall time complexity linear.
 
 **Space Complexity:**
-The space complexity of the code is O(1) because the space used is not directly proportional to the input size. The frequency map `freq` has a constant number of entries (26 for English lowercase letters), regardless of the length of the input strings. Therefore, the space complexity is constant, and it can be considered O(1).
+The space complexity of the code is O(1) for the input character set limited to lowercase English letters. However, if an unordered_map or map is used, the space complexity becomes O(K), where K is the size of the character set. For lowercase English letters (26 characters), this would still be considered constant, but for a general case with a larger character set, the space complexity would be O(K).
 
 **In summary:**
 - *Time Complexity:* O(N)
-- *Space Complexity:* O(1)
+- *Space Complexity:* O(K), where K is the size of the character set (constant for lowercase English letters).
+
 
 
 
