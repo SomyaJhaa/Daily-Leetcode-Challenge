@@ -50,7 +50,7 @@ These three approaches solve the house robbery problem by considering different 
 ### Top-Down (Code 1):
 
 **Time Complexity:**
-The time complexity of the top-down approach is O(2^n), where n is the number of houses. This is because each recursive call branches into two further calls, leading to an exponential number of recursive calls. However, with memoization, the actual time complexity is reduced to O(n), as each subproblem is solved only once.
+The time complexity of the top-down approach is O(n), where n is the number of houses. This is because each recursive call branches into two further calls, leading to an exponential number of recursive calls. However, with memoization, the actual time complexity is reduced to O(n), as each subproblem is solved only once.
 
 **Space Complexity:**
 The space complexity is O(n) due to the memoization array, which stores the results of subproblems.
