@@ -5,114 +5,78 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 24-01-24 [Problem Link](https://leetcode.com/problems/pseudo-palindromic-paths-in-a-binary-tree/description/?envType=daily-question&envId=2024-01-24)
-## 1457. Pseudo-Palindromic Paths in a Binary Tree
+## Today's 25-01-24 
+## [1143. Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/description/?envType=daily-question&envId=2024-01-25)
 
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-The goal is to find the number of pseudo-palindromic paths in a binary tree. A pseudo-palindromic path is a path where the frequency of each digit in the path is such that at most one digit has an odd frequency, making it possible to form a palindrome.
+This problem aims to find the length of the longest common subsequence (LCS) between two given strings, `text1` and `text2`. A subsequence is a sequence that appears in the same relative order, but not necessarily contiguous. The code uses dynamic programming to efficiently find the length of the LCS.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-##### TreeNode Class :
-   - My code starts with the definition of a `TreeNode` class representing a node in the binary tree.
+**Dynamic Programming Array (dp) :**
+   - Created a 2D array `dp` of dimensions `(1 + text1.length()) x (1 + text2.length())` to store the lengths of common subsequences for different prefixes of the input strings.
+   - `dp[i][j]` represents the length of the LCS for the prefixes of `text1` up to index `i-1` and `text2` up to index `j-1`.
 
-##### Main Solution Class :
-   - The `Solution` class contains a static variable `jawab` to store the final result.
-
-   - The `pseudoPalindromicPaths` method initialized the result variable and calls the helper method to traverse the tree and find paths.
-
-##### Helper Method :
-   - The `helper` method is my recursive function that traversed the binary tree.
+**Nested Loop Iteration :**
+   - Iterated through each character in `text1` (using index `i`).
+   - For each character in `text1`, iterated through each character in `text2` (using index `j`).
    
-   - For each node encountered :
-     - It XORs the current node's value with the bitmask `rasta`.
-     - If the node is a leaf node :
-       - It checked if the updated bitmask has at most one set bit, indicating a pseudo-palindromic path.
-       - If true, incremented the result variable `jawab`.
-     - Recursively called itself for the left and right children, updating the bitmask accordingly.
+**Character Comparison :**
+   - If the characters at the current positions (i, j) in both strings are equal:
+      - Incremented the length of the common subsequence by 1: `dp[i + 1][j + 1] = 1 + dp[i][j]`.
+   - If the characters are not equal:
+      - Choosed the maximum length from the previous positions:
+        `dp[i + 1][j + 1] = Math.max(dp[i + 1][j], dp[i][j + 1])`.
 
-##### Bitmask :
-   - The bitmask `rasta` is used to keep track of the frequency of digits encountered in the path.
-   
-   - XOR operation is used to toggle the bit corresponding to the current node's value.
+**Result :**
+   - The value at the bottom-right corner of the array (`dp[text1.length()][text2.length()]`) contains the length of the longest common subsequence.
 
-   - The expression `((rasta - 1) & rasta) == 0` checks if the updated bitmask has at most one set bit, ensuring the pseudo-palindromic property.
+**Return :**
+   - Returned the length of the LCS as the final result.
 
-##### Result :
-   - The final result is the count of pseudo-palindromic paths, stored in the `jawab` variable.
+My dynamic programming approach efficiently breaks down the problem into subproblems, avoiding redundant computations and providing an optimal solution for finding the length of the longest common subsequence.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
 Keep Solving.:)
 
 # Complexity
-- Time complexity : $O(N)$
+- Time complexity : $O(a*b)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$N$ : number of nodes in the binary tree, as each node is visited once.
-- Space complexity : $O(H)$
+$a$ : length of string 'text1'
+
+$b$ : length of string 'text2'
+- Space complexity : $O(a*b)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
-$H$ : height of the binary tree, due to the recursion stack
 
 # Code
 ```
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode() {}
- *     TreeNode(int val) { this.val = val; }
- *     TreeNode(int val, TreeNode left, TreeNode right) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
- * }
- */
 class Solution {
+    
+    public int longestCommonSubsequence(String text1, String text2) {
+        
+        // Creating a 2D array to store the length of common subsequences
+        int[][] dp = new int[1 + text1.length()][1 + text2.length()];
 
-    // Static variable to store the result
-    static int jawab;
-
-    public int pseudoPalindromicPaths (TreeNode root) {
-        // Initializing the result variable
-        jawab = 0;
-
-        // Calling the helper function to traverse the tree and find paths
-        helper(0, root);
-
-        // Returning the final result
-        return jawab;
-    }
-
-    // Helper function to recursively traverse the tree and find paths
-    static void helper(int rasta, TreeNode r) {
-        // Base case: If the current node is null, return
-        if (r == null) {
-            return;
-        }
-
-        // Checking if the current node is a leaf node
-        if (r.left == null && r.right == null) {
-            // Update=ing the bitmask by toggling the bit corresponding to the current node's value
-            rasta ^= 1 << r.val;
-
-            // Checking if the updated bitmask has at most one set bit
-            if (((rasta - 1) & rasta) == 0) {
-                // If true, incrementing the result variable
-                jawab++;
+        // Iterating through each character in text1
+        for (int i = 0; i < text1.length(); i++) {
+            // Iterating through each character in text2
+            for (int j = 0; j < text2.length(); j++) {
+                // Checking if the characters at the current positions are equal
+                if (text1.charAt(i) == text2.charAt(j)) {
+                    // If equal, extending the common subsequence length by 1
+                    dp[i + 1][j + 1] = 1 + dp[i][j];
+                } else {
+                    // If not equal, choosing the maximum length from the previous positions
+                    dp[i + 1][j + 1] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+                }
             }
-
-            // Returning after processing the leaf node
-            return;
         }
 
-        // Recursively calling the helper function for the left and right children
-        helper(rasta ^ 1 << r.val, r.left);
-        helper(rasta ^ 1 << r.val, r.right);
+        // The value at the bottom-right corner of the array contains the length of the longest common subsequence
+        return dp[text1.length()][text2.length()];
     }
 }
 
