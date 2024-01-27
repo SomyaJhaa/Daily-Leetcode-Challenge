@@ -17,22 +17,22 @@ This problem requires counting the number of permutations of numbers from 1 to n
 # Approach
 <!-- Describe your approach to solving the problem. -->
 **Base Case :** 
-  - When j is 0 (no inverse pairs), there is only one way to arrange the numbers, i.e., the ascending order. So, dp[i][0] is set to 1 for all i.
+  - When j is 0 (no inverse pairs), there is only one way to arrange the numbers, i.e., the ascending order. So, gp[i][0] is set to 1 for all i.
 
 **Dynamic Programming Transition :**
-   - For each i and j, I updated the dp[i][j] using the following recurrence relation:
+   - For each i and j, I updated the gp[i][j] using the following recurrence relation:
      ```
-     dp[i][j] = (dp[i][j - 1] + dp[i - 1][j]) % MOD;
+     gp[i][j] = (gp[i][j - 1] + gp[i - 1][j]) % MOD;
      ```
      This accounted for permutations with the same number of inverse pairs as the previous step.
    
    - Additionally, if (j - i) is non-negative, I subtracted the count of permutations with (j - i) inverse pairs to avoid double counting:
      ```
-     dp[i][j] = (dp[i][j] - dp[i - 1][j - i] + MOD) % MOD;
+     gp[i][j] = (gp[i][j] - gp[i - 1][j - i] + MOD) % MOD;
      ```
 
 **Result :**
-   - The final result is stored in `dp[n][k]`, representing the count of permutations of numbers 1 to n with k inverse pairs.
+   - The final result is stored in `gp[n][k]`, representing the count of permutations of numbers 1 to n with k inverse pairs.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
