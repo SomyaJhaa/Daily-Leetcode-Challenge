@@ -6,82 +6,76 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 26-01-24 
-## [576. Out of Boundary Paths](https://leetcode.com/problems/out-of-boundary-paths/description/?envType=daily-question&envId=2024-01-26)
+## Today's 27-01-24 
+## [629. K Inverse Pairs Array](https://leetcode.com/problems/k-inverse-pairs-array/description/?envType=daily-question&envId=2024-01-27)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-This problem involves finding the number of paths a ball can take to move out of a grid within a given number of moves. My goal is to optimize the solution using dynamic programming to avoid redundant calculations.
+This problem requires counting the number of permutations of numbers from 1 to n with a given number of inverse pairs. An inverse pair in a permutation (a[i], a[j]) is defined as (i < j and a[i] > a[j]). The goal is to find the count of permutations with a specific number of inverse pairs.
+
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-I have utilized dynamic programming approach with memoization to efficiently calculate the number of paths. A recursive helper function is defined to explore all possible moves, and a 3D memoization array is used to store and retrieve previously computed results.
+**Base Case :** 
+  - When j is 0 (no inverse pairs), there is only one way to arrange the numbers, i.e., the ascending order. So, dp[i][0] is set to 1 for all i.
 
-#### Recursive Helper Function
+**Dynamic Programming Transition :**
+   - For each i and j, I updated the dp[i][j] using the following recurrence relation:
+     ```
+     dp[i][j] = (dp[i][j - 1] + dp[i - 1][j]) % MOD;
+     ```
+     This accounted for permutations with the same number of inverse pairs as the previous step.
+   
+   - Additionally, if (j - i) is non-negative, I subtracted the count of permutations with (j - i) inverse pairs to avoid double counting:
+     ```
+     dp[i][j] = (dp[i][j] - dp[i - 1][j - i] + MOD) % MOD;
+     ```
 
-My recursive function is responsible for calculating the number of paths from a given cell with a specified number of remaining moves. Key points of the recursive function include:
-- Base cases : Handled scenarios where the ball moves outside the grid or runs out of moves.
-- Memoization : Stored and retrieved results using a 3D array to avoid redundant calculations.
-- Recursive step : Explored all possible moves (up, down, left, right) and sum up the results with modulo to prevent integer overflow.
-
-#### Code Explanation
-My Java code provided implements the described approach. The `findPaths` function initializes the memoization array and calls the recursive helper function. The `helper` function handles the recursive calculations and memoization.
+**Result :**
+   - The final result is stored in `dp[n][k]`, representing the count of permutations of numbers 1 to n with k inverse pairs.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
 Keep Solving.:)
 
+
 # Complexity
-- Time complexity : $O(m * n * maxMove)$
+- Time complexity : $O(n*k)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$m$ :  number of rows in the grid
-$n$ :  number of columns in the grid
-$maxMove$ :  maximum number of moves allowed
-- Space complexity :  $O(m * n * (1+maxMove))$ ~  $O(m * n * maxMove)$
+
+- Space complexity : $O(n*k)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
 class Solution {
+    static int MOD = 1_000_000_007;
 
-    // Modulo value for the result
-    static int mod = 1_000_000_007;
+    // Function to calculate the number of arrays with k inverse pairs
+    public int kInversePairs(int n, int k) {
+        // gp[i][j] representing the number of arrays of length i with j inverse pairs
+        int[][] gp = new int[n + 1][k + 1];
 
-    // Main function to find paths
-    public int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
-        
-        // Creating 3D array to store previously calculated results
-        Integer[][][] h = new Integer[1 + maxMove][m][n];
-        return helper(startRow, startColumn, maxMove, m, n, h);
-    }
-
-    // Helper function for recursive calculations
-    static int helper(int r, int c, int max, int m, int n, Integer[][][] h) {
-        // Base case: if the cell is outside the grid, count it as a path
-        if (r < 0 || c < 0 || r == m || c == n) {
-            return 1;
-        }
-        
-        // Base case: if the maximum moves are exhausted, no more paths
-        if (max == 0) {
-            return 0;
+        // Base case: If there are no inverse pairs (j=0), there is only one array (empty array).
+        for (int i = 0; i <= n; i++) {
+            gp[i][0] = 1;
         }
 
-        // If the result for the current state is already calculated, returning it
-        if (h[max][r][c] != null) {
-            return h[max][r][c];
+        // Dynamic Programming to fill the gp array
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= k; ++j) {
+                // Calculating the number of arrays with j inverse pairs
+                gp[i][j] = (gp[i][j - 1] + gp[i - 1][j]) % MOD;
+                
+                // If j - i is non-negative, subtracting the count of arrays with (j - i) inverse pairs
+                if (j - i >= 0) {
+                    gp[i][j] = (gp[i][j] - gp[i - 1][j - i] + MOD) % MOD;
+                }
+            }
         }
 
-        // Recursively calculating of paths by moving in all possible directions
-        h[max][r][c] = (int) ((
-                (helper(r, c + 1, max - 1, m, n, h)) * 1L +
-                helper(r, c - 1, max - 1, m, n, h) +
-                helper(r + 1, c, max - 1, m, n, h) +
-                helper(r - 1, c, max - 1, m, n, h)
-        ) % mod);
-
-        // Storing the calculated result and return it
-        return h[max][r][c];
+        // Returning the result, which represents the number of arrays of length n with k inverse pairs
+        return gp[n][k];
     }
 }
 
