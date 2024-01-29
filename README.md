@@ -6,101 +6,81 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 28-01-24 
-## [1074. Number of Submatrices That Sum to Target](https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/description/?envType=daily-question&envId=2024-01-28)
-
+## Today's 29-01-24 
+## [232. Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/description/?envType=daily-question&envId=2024-01-29)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-The problem is finding the number of submatrices in a given matrix whose sum is equal to a target value. 
+My code implements a queue data structure using two stacks (`andar` and `bahar`). A queue follows the First-In-First-Out (FIFO) principle, and stacks follow the Last-In-First-Out (LIFO) principle. By utilizing two stacks cleverly, I can simulate the behavior of a queue efficiently.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-**Initialized Variables :**
-   - `jawab`: A static variable to store the final result.
-   - `r`: Number of rows in the matrix.
-   - `c`: Number of columns in the matrix.
-   - `m`: A HashMap to store cumulative sum frequencies.
+**Initialization :**
+  - Two stacks, andar and bahar, represent the input and output of the queue.
 
-**Calculated Cumulative Sums :**
-   - Iterated over each row in the matrix and calculated cumulative sums for each element in that row. This is done to efficiently compute the sum of submatrices.
+**Push Operation (push method) :**
+  - Added elements to the input stack (andar), representing the enqueue operation.
 
-**Iterated Over Column Combinations :**
-   - Used two nested loops to iterate over all possible combinations of columns (ic and j).
-   - For each column combination, initialized the HashMap (`m`) to store cumulative sum frequencies.
+**Pop Operation (pop method) :**
+  - Ensured the output stack (bahar) is populated before popping an element.
+  - Called the peek method to populate the output stack if needed and then pops the front element.
 
-**Calculate Cumulative Sums for Submatrices :**
-   - Iterated over each row to calculate the cumulative sum (`jor`) for submatrices.
-   - Adjusted the cumulative sum if `ic` is greater than 0 (not the first column).
+**Peek Operation (peek method) :**
+  - Transferred elements from the input stack to the output stack if the output stack is empty.
+  - Ensured the front element of the queue is always at the top of the output stack.
+  - Returned the front element without removing it.
 
-**Updated Result and HashMap :**
-   - Updated the result (`jawab`) by adding the frequency of the target cumulative sum found in the HashMap.
-   - Updated the HashMap with the current cumulative sum and its frequency.
+**Empty Check (empty method) :**
+  - Checked if both the input and output stacks are empty, indicating an empty queue.
+  - 
+My implementation provides an efficient way to simulate the behavior of a queue using two stacks while maintaining the FIFO order of elements.
 
-**Return Result :**
-   - Returned the final result, which represents the count of submatrices with the target sum.
-
-My approach leverages cumulative sums and dynamic programming to efficiently count submatrices with a target sum, making it an optimized solution.
-
----
-Have a look at the code , still have any confusion then please let me know in the comments
-Keep Solving.:)
 # Complexity
-- Time complexity : $O(r * c^2)$
+- Time complexity : $O(1)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$r$ : number of rows in the matrix
 
-$c$ : number of columns in the matrix
-- Space complexity : $O(c)$
+- Space complexity : $O(e)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
+$e$ : number of elements in the queue
 
 # Code
 ```
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-class Solution {
-    static int jawab; // Static variable to store the final result
-    static int r;     // Number of rows in the matrix
-    static int c;     // Number of columns in the matrix
-    static HashMap<Integer, Integer> m; // HashMap to store the cumulative sum frequencies
+// Implementation of a queue using two stacks
+class MyQueue {
+  // Two stacks to represent the queue
+  private Deque<Integer> andar = new ArrayDeque<>();
+  private Deque<Integer> bahar = new ArrayDeque<>();
+  
+  // Method to push an element onto the queue
+  public void push(int x) {
+    andar.push(x);
+  }
 
-    public int numSubmatrixSumTarget(int[][] matrix, int target) {
-        jawab = 0; // Initialize the result to 0
-        r = matrix.length; // Number of rows in the matrix
-        c = matrix[0].length; // Number of columns in the matrix
-        
-        // Calculating the cumulative sum for each row
-        for (int[] p : matrix) {
-            for (int j = 1; j < c; j++) {
-                p[j] += p[j - 1];
-            }
-        }
+  // Method to pop an element from the queue
+  public int pop() {
+    // Ensuring the output stack is populated before popping
+    peek();
+    return bahar.pop();
+  }
 
-        // Iterating over all possible column combinations
-        for (int ic = 0; ic < c; ic++) {
-            for (int j = ic; j < c; j++) {
-                m = new HashMap<>(); // Initializing the HashMap for each column combination
-                m.put(0, 1); // Initializing the HashMap with the base case (cumulative sum = 0, frequency = 1)
-                int jor = 0; // Initializing the cumulative sum variable
-
-                // Iterating over each row to calculate the cumulative sum
-                for (int p = 0; p < r; p++) {
-                    jor += matrix[p][j];
-                    
-                    // Adjusting the cumulative sum if ic > 0 (not the first column)
-                    if (ic > 0) {
-                        jor -= matrix[p][ic - 1];
-                    }
-
-                    // Updating the result with the frequency of the target cumulative sum
-                    jawab += m.getOrDefault(jor - target, 0);
-                    
-                    // Updating the HashMap with the current cumulative sum
-                    m.merge(jor, 1, Integer::sum);
-                }
-            }
-        }
-        return jawab; // Returning the final result
+  // Method to peek at the front element of the queue
+  public int peek() {
+    // If the output stack is empty, transferring elements from input to output
+    if (bahar.isEmpty()) {
+      while (!andar.isEmpty()) {
+        bahar.push(andar.pop());
+      }
     }
+    return bahar.peek();
+  }
+
+  // Method to check if the queue is empty
+  public boolean empty() {
+    return andar.isEmpty() && bahar.isEmpty();
+  }
 }
 
 ```
