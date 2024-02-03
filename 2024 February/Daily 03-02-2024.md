@@ -1,11 +1,3 @@
-
-# Leetcode Daily Challenge Solutions
-
-This is my attempt to make the coding experience easier for you guys so that you can easily learn what to do in today's leetcode challenge.
-
-
-## Always here to assist you guys.
-
 ## Today's 03-02-24 
 ## [1043. Partition Array for Maximum Sum](https://leetcode.com/problems/partition-array-for-maximum-sum/description/?envType=daily-question&envId=2024-02-03)
 
