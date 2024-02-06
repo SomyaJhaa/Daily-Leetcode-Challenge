@@ -1,48 +1,87 @@
-## Today's 05-02-24 
-## [387. First Unique Character in a String](https://leetcode.com/problems/first-unique-character-in-a-string/description/?envType=daily-question&envId=2024-02-05)
+## Today's 06-02-24 
+## [49. Group Anagrams](https://leetcode.com/problems/group-anagrams/description/?envType=daily-question&envId=2024-02-06)
+
+# Intuition
+<!-- Describe your first thoughts on how to solve this problem. -->
+The goal of my algorithm is to group anagrams from a given array of strings. Two strings are considered anagrams if they can be rearranged to form the same string.
 
 
-**Intuition:**
-The goal is to find the index of the first non-repeating character in the given string. To achieve this, the code uses an unordered map to count the occurrences of each character in the string. Then, it iterates through the string again to find the first character with a count of 1, indicating it is non-repeating.
+# Approach
+<!-- Describe your approach to solving the problem. -->
 
-**Approach:**
-1. Create an unordered map `mp` to store the count of each character in the string.
-2. Iterate through the string and update the counts in the map.
-3. Iterate through the string again, and for each character, check its count in the map.
-4. Return the index of the first character with a count of 1.
-5. If no such character is found, return -1.
+**Initialized the HashMap** : Created a HashMap (`m`) to store anagrams grouped by their sorted representations.
 
-**Time Complexity:**
-- The code iterates through the string twice.
-- The first iteration updates the counts in the unordered map, which takes O(n) time, where n is the length of the string.
-- The second iteration checks the count for each character, which also takes O(n) time in the worst case.
-- Therefore, the overall time complexity is O(n).
+**Iterated Through Strings** : Looped through each string (`str`) in the input array.
 
-**Space Complexity:**
-- The unordered map `mp` is used to store the counts of characters.
-- In the worst case, all characters are unique, and the map could have a size of O(n), where n is the length of the string.
-- Therefore, the space complexity is O(n).
+**Sorted the Characters** : Converted the string to a character array (`c`) and sorted it. This ensured that anagrams have the same sorted representation.
 
+    ```java
+    char[] c = str.toCharArray();
+    Arrays.sort(c);
+    String s = new String(c);
+    ```
 
+**Group Anagrams** : Used `computeIfAbsent` to add the sorted representation (`s`) as a key in the HashMap. If the key is absent, created a new `ArrayList` as the value. Added the original string to the corresponding list.
+
+    ```java
+    m.computeIfAbsent(s, p -> new ArrayList<>()).add(str);
+    ```
+
+    Alternatively, I could have used `putIfAbsent` and `get`:
+
+    ```java
+    // m.putIfAbsent(s, new ArrayList<>());
+    // m.get(s).add(str);
+    ```
+
+**Returned the Result** :  After processing all strings, returned the grouped anagrams as a list of lists.
+
+    ```java
+    return new ArrayList<>(m.values());
+    ```
+
+My approach ensured that anagrams are grouped together based on their sorted representations, allowing for efficient grouping and retrieval.
+
+---
+Have a look at the code , still have any confusion then please let me know in the comments
+Keep Solving.:)
+# Complexity
+- Time complexity : $O(N⋅K⋅log(K))$
+<!-- Add your time complexity here, e.g. $$O(n)$$ -->
+$N$ : number of strings in the input array.
+
+$K$ : maximum length of a string.
+- Space complexity : $O(M)$
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
+$M$ : number of unique sorted representations.
 
 # Code
 ```
 class Solution {
-public:
-    int firstUniqChar(string s) {
-       unordered_map<char, int> mp;
-        for (auto a : s) mp[a]++;
+    public List<List<String>> groupAnagrams(String[] strs) {
+        
+        // Initializing a HashMap to store anagrams grouped by their sorted representations
+        HashMap<String, List<String>> m = new HashMap<>();
 
+        // Iterating through each string in the input array
+        for (String str : strs) {
+            // Converting the string to a char array and sort it
+            char[] c = str.toCharArray();
+            Arrays.sort(c);
+            String s = new String(c);
+            
+            // Using computeIfAbsent to add the sorted representation as a key
+            // If the key is absent, it will create a new ArrayList as the value and add the original string to the corresponding list
+            m.computeIfAbsent(s, p -> new ArrayList<>()).add(str);
 
-        for (int i = 0; i < s.size(); i++) {
-            if (mp[s[i]] == 1) {
-               
-                return i;
-            }
+            // Alternative approach using putIfAbsent and get
+            //m.putIfAbsent(s, new ArrayList<>());
+            //m.get(s).add(str);
         }
-        return -1;
-    }
-}; 
 
+        // Returning the grouped anagrams as a list of lists
+        return new ArrayList<>(m.values());
+    }
+}
 
 ```
