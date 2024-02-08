@@ -1,51 +1,76 @@
-## Today's 07-02-24 
-## [451. Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/description/?envType=daily-question&envId=2024-02-07)
+# Daily Leetcode Challenge Solutions
 
-**Intuition:**
-The intuition behind the code is to first count the frequency of each character in the given string using an unordered map. Then, create a bucket to store characters based on their frequency. Finally, concatenate the characters in decreasing order of frequency to obtain the sorted string.
+## Today's 08-02-24 
+## [279. Perfect Squares](https://leetcode.com/problems/perfect-squares/description/?envType=daily-question&envId=2024-02-08)
 
-**Approach:**
-1. Count the frequency of each character using an unordered map (`freq`).
-2. Create a vector of vectors (`bucketData`) to store characters based on their frequency.
-3. Iterate through the characters in the frequency map and add them to the corresponding frequency bucket in `bucketData`.
-4. Concatenate the characters in decreasing order of frequency to obtain the sorted string (`ans`).
+# Intuition
+<!-- Describe your first thoughts on how to solve this problem. -->
+This problem required finding the minimum number of perfect squares that sum up to a given number n. Dynamic programming was the suitable approach, where I iteratively built the solution by considering optimal solutions to subproblems. My key was to break down the problem into smaller parts and leverage the solutions to those parts.
 
-**Time Complexity:**
-Let n be the length of the input string s.
-- The loop that counts the frequency takes O(n) time.
-- The loop that populates `bucketData` takes O(n) time.
-- The loop that constructs the result string takes O(n) time.
+# Approach
+<!-- Describe your approach to solving the problem. -->
+**Dynamic Programming Array (gp) :**
+- Created a dynamic programming array `gp` of size `n+1` to store the minimum number of perfect squares needed for each value from 0 to n.
+- Initialized all values in the array to a large number (`n`) to represent an initial state.
 
-Therefore, the overall time complexity is O(n).
+**Base Cases :**
+- Set `gp[0]` to 0 because 0 is already a perfect square (no additional squares needed).
+- Set `gp[1]` to 1 because 1 is a perfect square itself (only one square needed).
 
-**Space Complexity:**
-- The unordered map (`freq`) stores the frequency of each character, taking O(n) space in the worst case.
-- The vector of vectors (`bucketData`) stores characters based on their frequency, taking O(n) space.
-- The result string (`ans`) also takes O(n) space.
+**Filled Iteratively :**
+- Iterated from 2 to `n`, considering each number as the target.
+- For each target number `i`, iterated over all possible perfect squares less than or equal to i to find the minimum number of squares needed.
 
-Therefore, the overall space complexity is O(n).
+**Updated Minimum Squares :**
+- For each perfect square `s`, updated the minimum number of squares needed for `i` as `gp[i] = Math.min(gp[i], gp[i - s*s] + 1)`.
 
+**Result :**
+- After completing the iteration, `gp[n]` contained the minimum number of perfect squares needed for the given number `n`.
+
+
+My approach built the solution for larger numbers based on optimal solutions for smaller subproblems. I considered all possible combinations of perfect squares, ensuring an optimal and efficient solution. The final result is the minimum number of perfect squares needed to represent the target number `n`.
+
+---
+Have a look at the code , still have any confusion then please let me know in the comments
+Keep Solving.:)
+# Complexity
+- Time complexity : $O(n * \sqrt{n})$
+<!-- Add your time complexity here, e.g. $$O(n)$$ -->
+
+- Space complexity : $O(n)$
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
 class Solution {
-public:
-    string frequencySort(string s) {
-        unordered_map<char, int> freq;
-        for(auto ch : s) freq[ch]++;
 
-        vector<vector<char>> bucketData(s.length() + 1);
-        for(auto [ch, fq] : freq) bucketData[fq].push_back(ch);
+    // Declaring an array to store the minimum number of perfect squares needed for each value
+    static int[] gp;
 
-         string ans = "";
-
-         for(int fq=s.length(); fq>=1; fq--){
-             for(auto ch : bucketData[fq])
-                ans.append(fq, ch);
-         }
-        return ans;
-       
+    // Function to calculate the minimum number of perfect squares needed for a given number n
+    public int numSquares(int n) {
+        
+        // Initializing the array with size (n+1) and fill it with 'n'
+        gp = new int[n+1];
+        Arrays.fill(gp, n);
+        
+        // Base cases
+        gp[0] = 0;   // Zero is already a perfect square, so no additional squares needed
+        gp[1] = 1;   // One is a perfect square itself, so only one square needed
+        
+        // Iterating from 2 to n to fill the dp array
+        for( int i = 2; i <= n; i++){
+            `
+            // Iterating over all possible perfect squares less than or equal to i
+            for( int s = 1; s*s <= i; s++){
+                
+                // Updating the minimum number of squares needed for i
+                gp[i] = Math.min(gp[i], gp[i - s*s] + 1);
+            }
+        }
+        
+        // Returning the minimum number of perfect squares needed for the given number n
+        return gp[n];
     }
-};
-
+}
 ```
