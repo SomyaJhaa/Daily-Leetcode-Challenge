@@ -1,42 +1,45 @@
 # Daily Leetcode Challenge Solutions
 
-## Today's 08-02-24 
-## [279. Perfect Squares](https://leetcode.com/problems/perfect-squares/description/?envType=daily-question&envId=2024-02-08)
+## Today's 09-02-24 
+## [368. Largest Divisible Subset](https://leetcode.com/problems/largest-divisible-subset/description/?envType=daily-question&envId=2024-02-09)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-This problem required finding the minimum number of perfect squares that sum up to a given number n. Dynamic programming was the suitable approach, where I iteratively built the solution by considering optimal solutions to subproblems. My key was to break down the problem into smaller parts and leverage the solutions to those parts.
+This problem aimed to find the largest divisible subset from a given array of integers. A divisible subset is a set of integers where every pair `(nums[i], nums[j])` satisfies `nums[i] % nums[j] == 0` or `nums[j] % nums[i] == 0`. The goal is to return the largest possible subset.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-**Dynamic Programming Array (gp) :**
-- Created a dynamic programming array `gp` of size `n+1` to store the minimum number of perfect squares needed for each value from 0 to n.
-- Initialized all values in the array to a large number (`n`) to represent an initial state.
+**Sort** : Sorted the given array `nums` in ascending order. Sorting helped in efficiently checking divisibility relationships between elements.
 
-**Base Cases :**
-- Set `gp[0]` to 0 because 0 is already a perfect square (no additional squares needed).
-- Set `gp[1]` to 1 because 1 is a perfect square itself (only one square needed).
+**Dynamic Programming** :
+- Initialized three arrays :
+    - `khtm`: Array to store the length of the divisible subset ending at each index.
+    - `pichla`: Array to store the index of the previous element in the divisible subset.
+    - `jawab`: ArrayList to store the result, i.e., the largest divisible subset.
 
-**Filled Iteratively :**
-- Iterated from 2 to `n`, considering each number as the target.
-- For each target number `i`, iterated over all possible perfect squares less than or equal to i to find the minimum number of squares needed.
+- Initialized all elements of `khtm` to 1, as the minimum length of a subset is 1.
+- Initialized all elements of `pichla` to -1, indicating no previous element initially.
+- Used a nested loop to iterate through each pair of elements and updated `khtm` and `pichla` based on the divisibility relationship.
 
-**Updated Minimum Squares :**
-- For each perfect square `s`, updated the minimum number of squares needed for `i` as `gp[i] = Math.min(gp[i], gp[i - s*s] + 1)`.
+**Identified Maximum Length** :
+- Kept track of the maximum length `sbsebra` and its corresponding index `in` during the dynamic programming phase.
 
-**Result :**
-- After completing the iteration, `gp[n]` contained the minimum number of perfect squares needed for the given number `n`.
+**Reconstructed Subset** :
+- Reconstructed the largest divisible subset using the information stored in the `pichla` array.
 
+**Returned the Result** :
+- Returned the final result, i.e., the largest divisible subset.
 
-My approach built the solution for larger numbers based on optimal solutions for smaller subproblems. I considered all possible combinations of perfect squares, ensuring an optimal and efficient solution. The final result is the minimum number of perfect squares needed to represent the target number `n`.
+My dynamic programming approach efficiently identified the length of the largest divisible subset ending at each index and used this information to reconstruct the subset.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
 Keep Solving.:)
-# Complexity
-- Time complexity : $O(n * \sqrt{n})$
-<!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
+# Complexity
+- Time complexity : $O(n log n + n^2)$ $\equiv$  $O(n^2)$
+<!-- Add your time complexity here, e.g. $$O(n)$$ -->
+$n$ : length of the input array nums
 - Space complexity : $O(n)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
@@ -44,33 +47,52 @@ Keep Solving.:)
 ```
 class Solution {
 
-    // Declaring an array to store the minimum number of perfect squares needed for each value
-    static int[] gp;
+    // Static variables to store the result, lengths, and previous index of the largest divisible subset
+    static ArrayList<Integer> jawab;
+    static int[] khtm;
+    static int[] pichla;
 
-    // Function to calculate the minimum number of perfect squares needed for a given number n
-    public int numSquares(int n) {
+    // Main function to find the largest divisible subset
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        // Sorting the array in ascending order
+        Arrays.sort(nums);
         
-        // Initializing the array with size (n+1) and fill it with 'n'
-        gp = new int[n+1];
-        Arrays.fill(gp, n);
-        
-        // Base cases
-        gp[0] = 0;   // Zero is already a perfect square, so no additional squares needed
-        gp[1] = 1;   // One is a perfect square itself, so only one square needed
-        
-        // Iterating from 2 to n to fill the dp array
-        for( int i = 2; i <= n; i++){
-            `
-            // Iterating over all possible perfect squares less than or equal to i
-            for( int s = 1; s*s <= i; s++){
-                
-                // Updating the minimum number of squares needed for i
-                gp[i] = Math.min(gp[i], gp[i - s*s] + 1);
+        // Initializing the result arraylist and length arrays
+        jawab = new ArrayList<>();
+        khtm = new int[nums.length];
+        Arrays.fill(khtm, 1);           // Initializing all lengths to 1
+        pichla = new int[nums.length];
+        Arrays.fill(pichla, -1);        // Initializing all previous indices to -1
+
+        // Variables to keep track of the maximum length and its corresponding index
+        int sbsebra = 0;
+        int in = -1;
+
+        // Dynamic programming approach to find the largest divisible subset
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i - 1; j >= 0; j--) {
+                // If the current number is divisible by the previous number
+                // and adding it forms a larger subset, updating the length and previous index
+                if (nums[i] % nums[j] == 0 && khtm[i] < 1 + khtm[j]) {
+                    khtm[i] = 1 + khtm[j];
+                    pichla[i] = j;
+                }
+            }
+            // Updating the maximum length and its corresponding index
+            if (sbsebra < khtm[i]) {
+                sbsebra = khtm[i];
+                in = i;
             }
         }
-        
-        // Returning the minimum number of perfect squares needed for the given number n
-        return gp[n];
+
+        // Reconstructing the subset using the previous index information
+        while (in != -1) {
+            jawab.add(nums[in]);
+            in = pichla[in];
+        }
+
+        // Returning the result
+        return jawab;
     }
 }
 ```
