@@ -1,98 +1,81 @@
 # Daily Leetcode Challenge Solutions
 
-## Today's 09-02-24 
-## [368. Largest Divisible Subset](https://leetcode.com/problems/largest-divisible-subset/description/?envType=daily-question&envId=2024-02-09)
+## Today's 10-02-24 
+## [647. Palindromic Substrings](https://leetcode.com/problems/palindromic-substrings/description/)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-This problem aimed to find the largest divisible subset from a given array of integers. A divisible subset is a set of integers where every pair `(nums[i], nums[j])` satisfies `nums[i] % nums[j] == 0` or `nums[j] % nums[i] == 0`. The goal is to return the largest possible subset.
+The task was to find and count palindromic substrings in a given string. A palindromic substring is one that reads the same backward as forward.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-**Sort** : Sorted the given array `nums` in ascending order. Sorting helped in efficiently checking divisibility relationships between elements.
+**Initialized the Count Variable :** Started with a count variable to keep track of the total number of palindromic substrings.
 
-**Dynamic Programming** :
-- Initialized three arrays :
-    - `khtm`: Array to store the length of the divisible subset ending at each index.
-    - `pichla`: Array to store the index of the previous element in the divisible subset.
-    - `jawab`: ArrayList to store the result, i.e., the largest divisible subset.
+**Looped Through Characters :**
+- Iterated through each character in the string.
 
-- Initialized all elements of `khtm` to 1, as the minimum length of a subset is 1.
-- Initialized all elements of `pichla` to -1, indicating no previous element initially.
-- Used a nested loop to iterate through each pair of elements and updated `khtm` and `pichla` based on the divisibility relationship.
+**Considered Two Cases :**
+  - **Case 1 :** Palindromic substrings with odd length.
+    - Visualization :  Place both index fingers at position 'i' and expand them outward, checking for palindromes.
+   - **Case 2:** Palindromic substrings with even length.
+     - Visualization : Place the left index finger at position 'i' and the right index finger at 'i+1', then expand them outward, checking for palindromes.
 
-**Identified Maximum Length** :
-- Kept track of the maximum length `sbsebra` and its corresponding index `in` during the dynamic programming phase.
+**Implemented the Helper Function :**
+- Created a helper function to check and count palindromic substrings expanding from the given indices.
 
-**Reconstructed Subset** :
-- Reconstructed the largest divisible subset using the information stored in the `pichla` array.
+**While Loop for Expansion :**
+- Inside the helper function, used a while loop to continue expanding the indices until the string ends or the index fingers reach different characters.
 
-**Returned the Result** :
-- Returned the final result, i.e., the largest divisible subset.
+**Incremented the Count :**
+- Incremented the count for each valid palindromic substring found.
 
-My dynamic programming approach efficiently identified the length of the largest divisible subset ending at each index and used this information to reconstruct the subset.
+**Returned the Final Count :**
+- Returned the final count as the result.
+
+My approach efficiently counted all palindromic substrings by expanding around each character in the string. My checking function ensured that all possible palindromic substrings are considered.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
 Keep Solving.:)
 
 # Complexity
-- Time complexity : $O(n log n + n^2)$ $\equiv$  $O(n^2)$
+- Time complexity : $O(l^2)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$n$ : length of the input array nums
-- Space complexity : $O(n)$
+l :  length of the input string.
+- Space complexity : $O(l)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
 class Solution {
+    // Function to count palindromic substrings in the given string
+    public static int countSubstrings(String s) {
+        int count = 0;
 
-    // Static variables to store the result, lengths, and previous index of the largest divisible subset
-    static ArrayList<Integer> jawab;
-    static int[] khtm;
-    static int[] pichla;
+        // Looping through each character in the string
+        for (int i = 0; i < s.length(); i++) {
+            // Counting palindromic substrings with odd length
+            count += checksides(i, i, s); // Visualization : Place both index fingers at position 'i' and expand them outward
 
-    // Main function to find the largest divisible subset
-    public List<Integer> largestDivisibleSubset(int[] nums) {
-        // Sorting the array in ascending order
-        Arrays.sort(nums);
-        
-        // Initializing the result arraylist and length arrays
-        jawab = new ArrayList<>();
-        khtm = new int[nums.length];
-        Arrays.fill(khtm, 1);           // Initializing all lengths to 1
-        pichla = new int[nums.length];
-        Arrays.fill(pichla, -1);        // Initializing all previous indices to -1
-
-        // Variables to keep track of the maximum length and its corresponding index
-        int sbsebra = 0;
-        int in = -1;
-
-        // Dynamic programming approach to find the largest divisible subset
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = i - 1; j >= 0; j--) {
-                // If the current number is divisible by the previous number
-                // and adding it forms a larger subset, updating the length and previous index
-                if (nums[i] % nums[j] == 0 && khtm[i] < 1 + khtm[j]) {
-                    khtm[i] = 1 + khtm[j];
-                    pichla[i] = j;
-                }
-            }
-            // Updating the maximum length and its corresponding index
-            if (sbsebra < khtm[i]) {
-                sbsebra = khtm[i];
-                in = i;
-            }
+            // Counting palindromic substrings with even length
+            count += checksides(i, i + 1, s); // Visualization : Place left index finger at position 'i' and right index finger at 'i+1', then expand them outward
         }
 
-        // Reconstructing the subset using the previous index information
-        while (in != -1) {
-            jawab.add(nums[in]);
-            in = pichla[in];
+        return count;
+    }
+
+    // Function to check and count palindromic substrings expanding from the given indices
+    static int checksides(int left, int right, String s) {
+        int c = 0;
+
+        // Keep incrementing until the string ends or index fingers reach different characters
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            c++;
+            left--;
+            right++;
         }
 
-        // Returning the result
-        return jawab;
+        return c; // Returning the count of palindromic substrings
     }
 }
 ```
