@@ -1,0 +1,66 @@
+## Today's 12-02-24 
+## [169. Majority Element](https://leetcode.com/problems/majority-element/description/)
+
+# Intuition
+<!-- Describe your first thoughts on how to solve this problem. -->
+This problem is designed to find the majority element in an array using the Boyer-Moore Voting Algorithm. 
+
+The majority element is defined as the element that appears more than ⌊n/2⌋ times, where n is the length of the array. This algorithm efficiently identifies the majority element in a single pass through the array.
+
+# Approach
+<!-- Describe your approach to solving the problem. -->
+
+- Initialized two variables :
+  - `a` : Represented the potential majority element.
+  - `c` : Represented a counter for tracking the occurrences of the potential majority element.
+
+- Iterated through the given array `nums`.
+
+- Inside the loop :
+  - If the counter `c` is 0, updated the potential majority element `a` to the current element `n`.
+  - Updated the counter `c` based on whether the current element `n` is equal to the potential majority element `a`. If equal, incremented `c`; otherwise, decremented `c`.
+
+- After the loop, the variable `a` contains the potential majority element.
+
+- Returned the potential majority element `a` as the final result.
+
+The Boyer-Moore Voting Algorithm ensured that if a majority element exists in the array, it will be correctly identified, and if no majority element exists, the algorithm may still return a candidate (though it may not necessarily be the majority element
+
+---
+Have a look at the code , still have any confusion then please let me know in the comments
+Keep Solving.:)
+# Complexity
+- Time complexity : $O(n)$
+<!-- Add your time complexity here, e.g. $$O(n)$$ -->
+$n$ :  length of the input array `nums`.
+- Space complexity : $O(1)$
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
+
+# Code
+```
+class Solution {
+
+  // Method to find the majority element in an array
+  public int majorityElement(int[] nums) {
+    
+    // Variable to store the potential majority element
+    Integer a = null;
+
+    // Counter to keep track of the occurrences of the potential majority element
+    int c = 0;
+    
+    // Iterating through the array
+    for (int n : nums) {
+      // If the counter is 0, updating the potential majority element to the current element
+      if (c == 0)
+        a = n;
+      
+      // Updating the counter based on whether the current element is equal to the potential majority element
+      c += n == a ? 1 : -1;
+    }
+    
+    // Returning the potential majority element
+    return a;
+  }
+}
+```
