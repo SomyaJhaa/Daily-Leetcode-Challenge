@@ -1,102 +1,68 @@
 # Daily Leetcode Challenge Solutions
 
-## Today's 11-02-24 
-## [1463. Cherry Pickup II](https://leetcode.com/problems/cherry-pickup-ii/description/?envType=daily-question&envId=2024-02-11)
+## Today's 12-02-24 
+## [169. Majority Element](https://leetcode.com/problems/majority-element/description/)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-The goal was to find the maximum number of cherries that two robots can collect while starting from the top row and moving towards the bottom row in a grid.
+This problem is designed to find the majority element in an array using the Boyer-Moore Voting Algorithm. 
+
+The majority element is defined as the element that appears more than ⌊n/2⌋ times, where n is the length of the array. This algorithm efficiently identifies the majority element in a single pass through the array.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-**Initialized the Memoization Array (`m`) :**
-- Created a 3D memoization array to store intermediate results.
-- The memoization array was used to avoid redundant calculations during recursive calls.
 
-**Recursive Cherry-Picking :**
-- Defined a recursive function (`cherryPick`) to explore all possible paths of both robots.
-- Base Cases :
-  - If the current row is at the bottom of the grid, returned 0.
-  - If either robot goes out of bounds, returned 0.
-  - If the result for the current state is already memoized, returned the memoized value.
-- Calculated the cherries collected in the current row based on the positions of both robots.
-- Recursively explored all the possible movements for both robots in the next row.
-- Updated the memoization array with the maximum cherries collected for the current state.
+- Initialized two variables :
+  - `a` : Represented the potential majority element.
+  - `c` : Represented a counter for tracking the occurrences of the potential majority element.
 
-**Started the Recursive Process :**
-- Called the recursive function with the initial positions of both robots at the top row.
+- Iterated through the given array `nums`.
 
-**Returned the Maximum Cherries :**
-- The final result is the maximum cherries that can be collected by both robots.
+- Inside the loop :
+  - If the counter `c` is 0, updated the potential majority element `a` to the current element `n`.
+  - Updated the counter `c` based on whether the current element `n` is equal to the potential majority element `a`. If equal, incremented `c`; otherwise, decremented `c`.
 
-My approach used recursion with memoization to explore all possible paths of the two robots, considering their movements in the grid. The memoization array helped optimizing the algorithm by avoiding redundant calculations and improving overall efficiency. The final result represented the maximum cherries that can be collected by both robots.
+- After the loop, the variable `a` contains the potential majority element.
+
+- Returned the potential majority element `a` as the final result.
+
+The Boyer-Moore Voting Algorithm ensured that if a majority element exists in the array, it will be correctly identified, and if no majority element exists, the algorithm may still return a candidate (though it may not necessarily be the majority element
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments
 Keep Solving.:)
-
 # Complexity
-- Time complexity : $O(9^m)$
+- Time complexity : $O(n)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$m$ : number of rows
-
-$n$ : number of columns
-- Space complexity : $O(m * n^2).$
+$n$ :  length of the input array `nums`.
+- Space complexity : $O(1)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
 class Solution {
 
-    // Memoization array to store intermediate results
-    static int[][][] m;
+  // Method to find the majority element in an array
+  public int majorityElement(int[] nums) {
     
-    public int cherryPickup(int[][] grid) {
+    // Variable to store the potential majority element
+    Integer a = null;
 
-        // Initializing the memoization array with dimensions based on the grid
-        m = new int[grid.length][grid[0].length][grid[0].length];
-
-        // Filling the memoization array with -1
-        for (int[][] a : m){
-            Arrays.stream(a).forEach(b -> Arrays.fill(b, -1));
-        }
-
-        // Starting the recursive cherry-picking process from the top row and both robots
-        return cherryPick(grid, 0, 0, grid[0].length - 1);
+    // Counter to keep track of the occurrences of the potential majority element
+    int c = 0;
+    
+    // Iterating through the array
+    for (int n : nums) {
+      // If the counter is 0, updating the potential majority element to the current element
+      if (c == 0)
+        a = n;
+      
+      // Updating the counter based on whether the current element is equal to the potential majority element
+      c += n == a ? 1 : -1;
     }
-
-    // Recursive helper function to find the maximum cherries collected
-    private int cherryPick(int[][] grid, int x, int y1, int y2) {
-        
-        // Base case : we have reached the bottom of the grid
-        if (x == grid.length){
-          return 0;
-        }
-
-        // Base case : robots are out of bounds
-        if (y1 < 0 || y1 == grid[0].length || y2 < 0 || y2 == grid[0].length){
-          return 0;
-        }
-
-        // Checking if the result is already memoized
-        if (m[x][y1][y2] != -1){
-          return m[x][y1][y2];
-        }
-
-        // Collecting cherries in the current row
-        int r = grid[x][y1] + (y1 == y2 ? 0 : grid[x][y2]);
-
-        // Trying all possible movements for both robots in the next row
-        for (int u = -1; u <= 1; u++){
-          for (int v = -1; v <= 1; v++){
-            // Updating the memoization array with the maximum cherries
-            m[x][y1][y2] = Math.max(m[x][y1][y2], r + cherryPick(grid, x + 1, y1 + u, y2 + v));
-          }
-        }
-
-        // Returning the maximum cherries collected for the current state
-        return m[x][y1][y2];
-    }
+    
+    // Returning the potential majority element
+    return a;
+  }
 }
-
 ```
