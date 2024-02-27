@@ -1,6 +1,6 @@
 # Daily Leetcode Challenge Solutions
 
-## Today's 24-02-24 
+## Today's 27-02-24 
 ## [543. Diameter of Binary Tree](https://leetcode.com/problems/diameter-of-binary-tree/description/?envType=daily-question&envId=2024-02-27)
 
 ## Intuition:
