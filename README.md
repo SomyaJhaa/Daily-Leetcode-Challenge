@@ -4,93 +4,99 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 09-03-24 [Problem Link](https://leetcode.com/problems/minimum-common-value/description/?envType=daily-question&envId=2024-03-09)
-## 2540. Minimum Common Value
+## Today's 11-03-24 
+## [791. Custom Sort String](https://leetcode.com/problems/custom-sort-string/description/?envType=daily-question&envId=2024-03-11)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-The goal is to find the common element between two arrays, and my approach involves using a HashSet to efficiently check for common elements. My algorithm first determines which array is larger and populates the HashSet with elements from the smaller array. Then, it iterates through the larger array to find the common element by checking HashSet membership. Once found, the common element is returned.
+My given code implements a custom sort string function using a HashSet and a HashMap.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-**Initialized the Variables :**
-   - Initialized `common` to -1 to store the common element.
-   - Initialized `n1IsLarge` to false to track which array is larger.
+**Initialization :**
+   - Created a HashSet `h` to store characters in the given order.
+   - Created a HashMap `m` to store characters and their counts in the input string.
+   - Initialized an empty string `jawab` to store the final result.
 
-**Determined Larger Array :**
-   - Checked if the length of `nums1` is greater than the length of `nums2`.
-   - Set `n1IsLarge` to true if `nums1` is larger.
+**Processed Order Characters :**
+   - Iterated through each character in the given order.
+   - If the character is present in the input string (`m.containsKey(c)`), appended it to the result string `jawab` based on its count.
 
-**Created HashSet :**
-   - Created a HashSet `h` to store elements of the smaller array.
-
-**Populated the HashSet :**
-   - If `n1IsLarge` is true, iterated through `nums2` and added elements to HashSet `h`.
-   - If `n1IsLarge` is false, iterated through `nums1` and added elements to HashSet `h`.
-
-**Found Common Element :**
-   - Iterated through the larger array.
-   - If the current element is present in HashSet `h`, set `common` to that element and broke the loop.
+**Processed Remaining Characters :**
+   - Iterated through each character in the input string.
+   - If the character is not in the given order (`!h.contains(c)`), added it to the order, and append it to the result string `jawab` based on its count.
 
 **Result :**
-   - Returned the value of `common`, which represents the common element.
+   - The final result string `jawab` contained the custom-sorted string based on the given order.
+
+My approach ensured that the characters are processed according to the specified order, and the resulting string follows the custom sorting criteria.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments ... Keep Solving.:)
+
 # Complexity
-- Time complexity : $O(m + n)$
+- Time complexity : $O( O + S + N )$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$m$ : length of smaller array
+$O$ : length of the order string
 
+$S$ : length of the input string
 
-$n$ : length of larger array
-- Space complexity : $O(m)$
+$N$ :  total number of characters in the input string
+- Space complexity : $O( O + S + N )$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
+// This is a Java implementation of a custom sort string function.
+// I used a HashSet and a HashMap to process the order and input string.
+
 class Solution {
 
-    public int getCommon(int[] nums1, int[] nums2) {
-        int common = -1;
-        boolean n1IsLarge = false;
-        
-        // Determining which array is larger
-        if (nums1.length > nums2.length) {
-            n1IsLarge = true;
+    // HashSet to store characters in the given order
+    static HashSet<Character> h;
+    // HashMap to store characters and their counts in the input string
+    static HashMap<Character, Integer> m;
+    // String to store the final result
+    static String jawab;
+
+    // Function to custom sort the input string based on the given order
+    public String customSortString(String order, String s) {
+        // Initializing the HashSet with the order characters
+        h = new HashSet<>();
+        for (char c : order.toCharArray()) {
+            h.add(c);
         }
-        
-        HashSet<Integer> h = new HashSet<>();
-        
-        // Populating the HashSet with the elements of the smaller array
-        if (n1IsLarge) {
-            for (int i : nums2) {
-                h.add(i);
-            }
-            
-            // Finding the common element
-            for (int i = 0; i < nums1.length; i++) {
-                if (h.contains(nums1[i])) {
-                    common = nums1[i];
-                    break;
-                }
-            }
-        } 
-        else {
-            for (int i : nums1) {
-                h.add(i);
-            }
-            
-            // Finding the common element
-            for (int i = 0; i < nums2.length; i++) {
-                if (h.contains(nums2[i])) {
-                    common = nums2[i];
-                    break;
+
+        // Initializing the HashMap with characters and their counts in the input string
+        m = new HashMap<>();
+        for (char c : s.toCharArray()) {
+            m.put(c, m.getOrDefault(c, 0) + 1);
+        }
+
+        // Initializing the result string
+        jawab = "";
+
+        // Processing characters in the given order and append them to the result string
+        for (char c : order.toCharArray()) {
+            if (m.containsKey(c)) {
+                for (int i = 0; i < m.get(c); i++) {
+                    jawab += c;
                 }
             }
         }
-        
-        return common;
+
+        // Processing remaining characters in the input string and append them to the result string
+        for (char c : s.toCharArray()) {
+            if (!h.contains(c)) {
+                h.add(c);
+                for (int i = 0; i < m.get(c); i++) {
+                    jawab += c;
+                }
+            }
+        }
+
+        // Returning the final result string
+        return jawab;
     }
 }
 ```
