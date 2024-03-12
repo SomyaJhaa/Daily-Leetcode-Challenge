@@ -4,99 +4,95 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 11-03-24 
-## [791. Custom Sort String](https://leetcode.com/problems/custom-sort-string/description/?envType=daily-question&envId=2024-03-11)
+## Today's 12-03-24 
+
+## [1171. Remove Zero Sum Consecutive Nodes from Linked List](https://leetcode.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/description/?envType=daily-question&envId=2024-03-12)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-My given code implements a custom sort string function using a HashSet and a HashMap.
+The goal of my algorithm should be to remove zero-sum sublists from a given linked list. 
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
+My approach involved using a dummy node and a HashMap to keep track of the prefix sum and the corresponding nodes.
+
 **Initialization :**
-   - Created a HashSet `h` to store characters in the given order.
-   - Created a HashMap `m` to store characters and their counts in the input string.
-   - Initialized an empty string `jawab` to store the final result.
+- Created a dummy node with a value of 0 and set it as the head.
+- Initialized a HashMap to store the prefix sum and corresponding nodes, starting with a prefix sum of 0 pointing to the dummy node.
+- Set the initial prefix sum variable to 0.
 
-**Processed Order Characters :**
-   - Iterated through each character in the given order.
-   - If the character is present in the input string (`m.containsKey(c)`), appended it to the result string `jawab` based on its count.
+**Populated the HashMap :**
+- Traversed the linked list, updating the prefix sum as we iterate.
+- Stored the current prefix sum and the corresponding node in the HashMap.
 
-**Processed Remaining Characters :**
-   - Iterated through each character in the input string.
-   - If the character is not in the given order (`!h.contains(c)`), added it to the order, and append it to the result string `jawab` based on its count.
+**Removed Zero-Sum Sublists :**
+- Reset the prefix sum variable to 0.
+- Traversed the linked list again.
+- Updated the next pointers of nodes to remove zero-sum sublists by pointing them to the next node after the corresponding prefix sum in the HashMap.
 
-**Result :**
-   - The final result string `jawab` contained the custom-sorted string based on the given order.
+**Result  :**
+- Returned the modified list starting from the dummy node's next.
 
-My approach ensured that the characters are processed according to the specified order, and the resulting string follows the custom sorting criteria.
+My approach efficiently handled the removal of zero-sum sublists by leveraging the HashMap to keep track of the prefix sums and their corresponding nodes.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments ... Keep Solving.:)
-
 # Complexity
-- Time complexity : $O( O + S + N )$
+- Time complexity : $O(N)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$O$ : length of the order string
-
-$S$ : length of the input string
-
-$N$ :  total number of characters in the input string
-- Space complexity : $O( O + S + N )$
+$N$ : number of nodes in the linked list
+- Space complexity : $O(N)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
-// This is a Java implementation of a custom sort string function.
-// I used a HashSet and a HashMap to process the order and input string.
-
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
 class Solution {
+    
+    // Static variables to store the map, the current node, and the prefix sum
+    static Map<Integer, ListNode> m;
+    static ListNode t;
+    static int prefixJor;
 
-    // HashSet to store characters in the given order
-    static HashSet<Character> h;
-    // HashMap to store characters and their counts in the input string
-    static HashMap<Character, Integer> m;
-    // String to store the final result
-    static String jawab;
-
-    // Function to custom sort the input string based on the given order
-    public String customSortString(String order, String s) {
-        // Initializing the HashSet with the order characters
-        h = new HashSet<>();
-        for (char c : order.toCharArray()) {
-            h.add(c);
-        }
-
-        // Initializing the HashMap with characters and their counts in the input string
+    // Function to remove zero-sum sublists
+    public ListNode removeZeroSumSublists(ListNode head) {
+        
+        // Creating a dummy node with value 0 and set it as the head
+        t = new ListNode(0, head);
+        
+        // Initializing the map with prefix sum 0 pointing to the dummy node
         m = new HashMap<>();
-        for (char c : s.toCharArray()) {
-            m.put(c, m.getOrDefault(c, 0) + 1);
+        m.put(0, t);
+        
+        // Initializing the prefix sum variable
+        prefixJor = 0;
+        
+        // Populating the map with prefix sum and corresponding nodes
+        for (ListNode node = t; node != null; node = node.next) {
+            prefixJor += node.val;
+            m.put(prefixJor, node);
         }
-
-        // Initializing the result string
-        jawab = "";
-
-        // Processing characters in the given order and append them to the result string
-        for (char c : order.toCharArray()) {
-            if (m.containsKey(c)) {
-                for (int i = 0; i < m.get(c); i++) {
-                    jawab += c;
-                }
-            }
+        
+        // Resetting prefix sum
+        prefixJor = 0;
+        
+        // Updating the next pointers to remove zero-sum sublists
+        for (ListNode node = t; node != null; node = node.next) {
+            prefixJor += node.val;
+            node.next = m.get(prefixJor).next;
         }
-
-        // Processing remaining characters in the input string and append them to the result string
-        for (char c : s.toCharArray()) {
-            if (!h.contains(c)) {
-                h.add(c);
-                for (int i = 0; i < m.get(c); i++) {
-                    jawab += c;
-                }
-            }
-        }
-
-        // Returning the final result string
-        return jawab;
+        
+        // Returning the modified list starting from the dummy node's next
+        return t.next;
     }
 }
 ```
