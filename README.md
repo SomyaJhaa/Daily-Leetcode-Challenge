@@ -4,95 +4,68 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 12-03-24 
+## Today's 14-03-24 
 
-## [1171. Remove Zero Sum Consecutive Nodes from Linked List](https://leetcode.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/description/?envType=daily-question&envId=2024-03-12)
+## [930. Binary Subarrays With Sum](https://leetcode.com/problems/binary-subarrays-with-sum/description/?envType=daily-question&envId=2024-03-14)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-The goal of my algorithm should be to remove zero-sum sublists from a given linked list. 
+To efficiently count the subarrays with the desired sum, I will utilize the concept of prefix sums.
+- A prefix sum of an array at index `i` represents the sum of all elements from index 0 to `i`.
+- By maintaining a prefix sum, I can determine the sum of any subarray by computing the difference between two prefix sums.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-My approach involved using a dummy node and a HashMap to keep track of the prefix sum and the corresponding nodes.
+- Initialized the variables : `ans` to store the result, `prefix` to keep track of the prefix sum, and `count` as a HashMap to store the count of encountered prefix sums.
+- Initialized the `count` HashMap with a key-value pair `(0, 1)` to indicate the prefix sum of 0 with count 1.
+- Iterated through the array elements :
+    - Updated the `prefix` sum by adding the current element.
+    - Calculated the difference between the current prefix sum and the target value (`goal`).
+    - If the HashMap contained the calculated key, added the count associated with that key to the result.
+    - Updated the count of the current prefix sum in the HashMap.
+- Returned the final count of subarrays with the given sum (`ans`).
 
-**Initialization :**
-- Created a dummy node with a value of 0 and set it as the head.
-- Initialized a HashMap to store the prefix sum and corresponding nodes, starting with a prefix sum of 0 pointing to the dummy node.
-- Set the initial prefix sum variable to 0.
-
-**Populated the HashMap :**
-- Traversed the linked list, updating the prefix sum as we iterate.
-- Stored the current prefix sum and the corresponding node in the HashMap.
-
-**Removed Zero-Sum Sublists :**
-- Reset the prefix sum variable to 0.
-- Traversed the linked list again.
-- Updated the next pointers of nodes to remove zero-sum sublists by pointing them to the next node after the corresponding prefix sum in the HashMap.
-
-**Result  :**
-- Returned the modified list starting from the dummy node's next.
-
-My approach efficiently handled the removal of zero-sum sublists by leveraging the HashMap to keep track of the prefix sums and their corresponding nodes.
+My approach efficiently counted the number of subarrays with the desired sum by utilizing prefix sums and a HashMap to keep track of prefix sum occurrences.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments ... Keep Solving.:)
 # Complexity
-- Time complexity : $O(N)$
+- Time complexity : $O(n)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$N$ : number of nodes in the linked list
-- Space complexity : $O(N)$
+$n$ : size of the input array
+- Space complexity : $O(n)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
-/**
- * Definition for singly-linked list.
- * public class ListNode {
- *     int val;
- *     ListNode next;
- *     ListNode() {}
- *     ListNode(int val) { this.val = val; }
- *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
- * }
- */
 class Solution {
-    
-    // Static variables to store the map, the current node, and the prefix sum
-    static Map<Integer, ListNode> m;
-    static ListNode t;
-    static int prefixJor;
+  
+  // Method to count the number of subarrays with the given sum.
+  public int numSubarraysWithSum(int[] nums, int goal) {
 
-    // Function to remove zero-sum sublists
-    public ListNode removeZeroSumSublists(ListNode head) {
-        
-        // Creating a dummy node with value 0 and set it as the head
-        t = new ListNode(0, head);
-        
-        // Initializing the map with prefix sum 0 pointing to the dummy node
-        m = new HashMap<>();
-        m.put(0, t);
-        
-        // Initializing the prefix sum variable
-        prefixJor = 0;
-        
-        // Populating the map with prefix sum and corresponding nodes
-        for (ListNode node = t; node != null; node = node.next) {
-            prefixJor += node.val;
-            m.put(prefixJor, node);
-        }
-        
-        // Resetting prefix sum
-        prefixJor = 0;
-        
-        // Updating the next pointers to remove zero-sum sublists
-        for (ListNode node = t; node != null; node = node.next) {
-            prefixJor += node.val;
-            node.next = m.get(prefixJor).next;
-        }
-        
-        // Returning the modified list starting from the dummy node's next
-        return t.next;
+    // Initializing variables to store the result and the prefix sum.
+    int ans = 0;
+    int prefix = 0;
+    // Creating a HashMap to store the count of prefix sums encountered so far.
+    Map<Integer, Integer> count = new HashMap<>();
+    // Adding an initial key-value pair to indicate the prefix sum of 0 with count 1.
+    count.put(0, 1);
+
+    // Iterating through the array elements.
+    for (final int num : nums) {
+      // Updating the prefix sum.
+      prefix += num;
+      // Calculating the difference between the current prefix sum and the target value.
+      final int key = prefix - goal;
+      // If the HashMap contains the key, add the count associated with that key to the result.
+      if (count.containsKey(key))
+        ans += count.get(key);
+      // Updating the count of the current prefix sum in the HashMap.
+      count.merge(prefix, 1, Integer::sum);
     }
+
+    // Returning the final count of subarrays with the given sum.
+    return ans;
+  }
 }
 ```
