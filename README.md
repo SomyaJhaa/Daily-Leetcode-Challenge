@@ -4,57 +4,66 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 17-03-24 
+## Today's 18-03-24 
 
-## [57. Insert Interval](https://leetcode.com/problems/insert-interval/?envType=daily-question&envId=2024-03-17)
+## [452. Minimum Number of Arrows to Burst Balloons](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/description/?envType=daily-question&envId=2024-03-18)
 
+# Intuition
+<!-- Describe your first thoughts on how to solve this problem. -->
+- Sort the points based on their end coordinates to efficiently burst balloons.
+- Iterate through the sorted array, updating the arrow position to burst overlapping balloons.
+- Increment the arrow count whenever a new arrow is needed.
+# Approach
+<!-- Describe your approach to solving the problem. -->
 
-**Intuition:**
-The given problem requires inserting a new interval into a sorted list of non-overlapping intervals and merging any overlapping intervals if necessary. To achieve this, we iterate through the list of intervals, comparing them with the new interval to determine the position where the new interval should be inserted. During this process, we also merge any overlapping intervals with the new interval if needed.
+**Sorted Points :** Sorted the points based on their end coordinates using a custom comparator.
 
-**Approach:**
-1. Initialize an empty list `merged` to store the merged intervals.
-2. Iterate through the list of intervals:
-   - If the end of the current interval is less than the start of the new interval, push the current interval into the `merged` list.
-   - If there's an overlap between the current interval and the new interval, merge them by updating the start and end of the new interval accordingly.
-   - Continue this process until there are no more intervals to process.
-3. Push the new interval (merged with overlapping intervals) into the `merged` list.
-4. Append any remaining intervals from the original list.
-5. Return the `merged` list as the result.
+**Initialized Variables :** Initialized variables for the arrow count and current arrow position.
 
-**Time Complexity:**
-The time complexity of the solution is O(n), where n is the number of intervals in the input list. This is because we iterate through the intervals once to find the insertion point and merge overlapping intervals if necessary.
+**Iterate Through Points :** Iterated through the sorted array of points.
 
-**Space Complexity:**
-The space complexity of the solution is also O(n). This is due to the additional space required to store the merged intervals in the `merged` list, which could potentially hold all intervals from the original list in the worst case.
+**Checked Balloon Positions :** For each point, checked if its start coordinate is greater than the current arrow position.
 
+**Updated Arrow Position :** If the start coordinate of the current point is greater than the current arrow position, updated the arrow position to the end coordinate of the current point.
+
+**Incremented Arrow Count :** Incremented the arrow count whenever a new arrow is needed to burst a balloon.
+
+**Result :** After iterating through all points, returned the arrow count as the minimum number of arrows needed.
+
+---
+Have a look at the code , still have any confusion then please let me know in the comments ... Keep Solving.:)
+# Complexity
+- Time complexity : $O(n * logn )$
+<!-- Add your time complexity here, e.g. $$O(n)$$ -->
+$n$ : number of points
+- Space complexity : $O(1)$
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
 class Solution {
-public:
-    vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
-        vector<vector<int>> merged;
-        int i = 0;
+  public int findMinArrowShots(int[][] points) {
+    
+    // Sorting points based on their end coordinates
+    Arrays.sort(points, (a, b) -> Integer.compare(a[1], b[1]));
 
-        while (i < intervals.size() && intervals[i][1] < newInterval[0]) {
-            merged.push_back(intervals[i]);
-            i++;
-        }
+    // Initializing variables
+    int jawab = 1;
+    int teer = points[0][1];
 
-        while (i < intervals.size() && intervals[i][0] <= newInterval[1]) {
-            newInterval = {min(newInterval[0], intervals[i][0]), max(newInterval[1], intervals[i][1])};
-            i++;
-        }
-        merged.push_back(newInterval);
-
-        while (i < intervals.size()) {
-            merged.push_back(intervals[i]);
-            i++;
-        }
-
-        return merged;
+    // Iterating through the sorted array of points
+    for (int i = 1; i < points.length; ++i) {
+      // If the start coordinate of the current point is greater than the current arrow position
+      if (points[i][0] > teer) {
+        // Updating the current arrow position to the end coordinate of the current point
+        teer = points[i][1];
+        // Incrementing the arrow count
+        jawab++;
+      }
     }
-};
 
+    // Returning the arrow count as the result
+    return jawab;
+  }
+}
 ```
