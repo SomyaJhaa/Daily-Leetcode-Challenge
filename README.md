@@ -4,63 +4,82 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 19-03-24 
+## Today's 20-03-24 
 
-## [621. Task Scheduler](https://leetcode.com/problems/task-scheduler/description/?envType=daily-question&envId=2024-03-19)
+## [1669. Merge In Between Linked Lists](https://leetcode.com/problems/merge-in-between-linked-lists/description/?envType=daily-question&envId=2024-03-20)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-The problem requires us to determine the least interval needed to execute a given set of tasks, considering a cooldown period between tasks of the same type. 
+The task is to merge the nodes of `head2` into `head1` between the indices `start` and `end`.
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-- I start by counting the frequency of each task. This allows us to identify the task with the maximum frequency.
 
-- I calculate the total time required to execute all tasks with cooldown. This is determined by finding the maximum frequency task and accounting for the cooldown period between its executions.
-
-- Next, I find the number of tasks that have the maximum frequency. This helps us understand how many tasks need to be executed with the maximum frequency.
-
-- Finally, I determine the least interval by considering the maximum of either executing all tasks with cooldown or the total number of tasks. This ensures that I cover both scenarios where the cooldown is utilized and where it is not necessary.
-
-By following this approach, I can efficiently calculate the least interval required to execute the tasks.
+- I initialized a pointer `beforeStartNode` to `head1`.
+- Moved `beforeStartNode` to the node before the `start` index by iterating `start - 1` times.
+- Initialized a pointer `endNode` to the node at the `start` index (i.e., `beforeStartNode.next`).
+- Moved `endNode` to the node at the `end` index by iterating `end - start` times.
+- Connected the node before the `start` index to the head of `head2`.
+- Finded the last node in `head2` by traversing till the end of the list.
+- Connected the last node of `head2` to the node after the `end` index.
+- Disconnected the nodes between the `start` and `end` indices from `head1`.
+- Returned the modified `head1` after merging `head2` between `start` and `end` indices.
 
 ---
 Have a look at the code , still have any confusion then please let me know in the comments ... Keep Solving.:)
 # Complexity
-- Time complexity : $O(t)$
+- Time complexity : $O(n)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$t$ : number of tasks
-- Space complexity : $O(26) = O(1)$
+$n$ :  number of nodes in the list
+- Space complexity : $O(1)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
 class Solution {
+  
+  // Function to merge the nodes of head2 into head1 between the indices start and end
+  public ListNode mergeInBetween(ListNode head1, int start, int end, ListNode head2) {
     
-    // Static array to keep track of task frequencies
-    static int[] frequencies;
-    
-    public int leastInterval(char[] tasks, int n) {
-        
-        // Initializing the frequency array to keep track of task occurrences
-        frequencies = new int[26];
-
-        // Populating the frequency array by iterating through the tasks
-        for (char task : tasks) {
-            frequencies[task - 'A']++;
-        }   
-
-        // Finding the maximum frequency of any task
-        int maxFrequency = Arrays.stream(frequencies).max().getAsInt();
-        
-        // Calculating the total time taken for executing all tasks with cooldown
-        int totalWithCooldown = (maxFrequency - 1) * (n + 1);
-        
-        // Calculating the number of tasks that have the maximum frequency
-        int numOfMaxFrequency = (int) Arrays.stream(frequencies).filter(f -> f == maxFrequency).count();
-        
-        // Returning the maximum of either executing all tasks with cooldown or total number of tasks
-        return Math.max(totalWithCooldown + numOfMaxFrequency, tasks.length);
+    // Pointer to the node before the start index
+    ListNode beforeStartNode = head1;
+    for (int i = 0; i < start - 1; i++){
+      beforeStartNode = beforeStartNode.next;
     }
+
+    // Pointer to the node at the end index
+    ListNode endNode = beforeStartNode.next;
+    for (int i = 0; i < end - start; i++){
+      endNode = endNode.next;
+    }
+
+    // Connecting the node before the start index to the head of head2
+    beforeStartNode.next = head2;
+    
+    // Finding the last node in head2
+    ListNode lastNodeInHead2 = head2;
+    while (lastNodeInHead2.next != null){
+      lastNodeInHead2 = lastNodeInHead2.next;
+    }
+
+    // Connecting the last node of head2 to the node after the end index
+    lastNodeInHead2.next = endNode.next;
+    
+    // Disconnecting the nodes between the start and end indices from head1
+    endNode.next = null;
+    
+    // Returning the modified head1 after merging head2 between start and end indices
+    return head1;
+  }
 }
 ```
