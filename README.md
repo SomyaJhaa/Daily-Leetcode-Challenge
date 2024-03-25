@@ -1,5 +1,5 @@
-# 🎨🌈 Wishing You a Colorful Holi! 🎉🎆
-## May your journey through the repository be as bright and joyful as the colors of Holi! Happy Holi to all our viewers! 🌺💫
+# 🎨🌈 Wishing You a Colorful Holi ! 🎉🎆
+## May your journey through the repository be as bright and joyful as the colors of Holi ! Happy Holi to all our viewers ! 🌺💫
 
 # Daily Leetcode Challenge Solutions
 
