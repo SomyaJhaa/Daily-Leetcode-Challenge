@@ -4,28 +4,38 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 28-03-24
+## Today's 29-03-24
 
-## [2958. Length of Longest Subarray With at Most K Frequency](https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/description/?envType=daily-question&envId=2024-03-28)
+## [2962. Count Subarrays Where Max Element Appears at Least K Times](https://leetcode.com/problems/count-subarrays-where-max-element-appears-at-least-k-times/description/?envType=daily-question&envId=2024-03-29)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-My algorithm should employ a sliding window technique to find the maximum subarray length whose sum equals a given target `k`.
+My given solution should aim to count the number of subarrays in an array `arr` with at least `k` occurrences of the maximum element.
+
 # Approach
 <!-- Describe your approach to solving the problem. -->
-**Initialization** : I initialized a HashMap to store the frequency of elements encountered and variables to track the start index of the subarray (`s`) and the maximum length found so far (`jawab`).
+**Initialization** :
+   - Initialized `length` as the length of `arr`.
+   - Initialized `maxValue` to store the maximum value in `arr`.
+   - Initialized `left` and `right` pointers for the sliding window approach.
+   - Initialized `ginti` to count occurrences of the maximum value.
+   - Initialized `jawab` to accumulate the count of valid subarrays.
 
-**Iterated Through Array** : Traversed the input array `nums`.
+**Fonded the Maximum Value** :
+   - Iterated through `arr` to find the maximum value, stored in `maxValue`.
 
-**Updated HashMap** : Updated the frequency of the current element in the HashMap using the `merge()` method.
+**Sliding Window Approach** :
+   - Initialized `left` and `right` pointers to traverse the array.
+   - Initialized `ginti` to track the count of occurrences of the maximum value in the current window.
+   - Iterated through the array using `right` pointer:
+     - Incremented `ginti` if `arr[right]` equals `maxValue`.
+     - If `ginti` becomes greater than or equal to `k` :
+       - Incremented `jawab` by the count of valid subarrays ending at `right`.
+       - Slided the window by incrementing `left` until `ginti` becomes less than `k`.
+   - Repeated the process until `right` reaches the end of the array.
 
-**Checked Subarray Sum** : Checked if the sum of elements from the start index to the current index equals `k`.
-
-**Adjusted Start Index** : If the sum exceeded `k`, moved the start index forward and updated the HashMap accordingly.
-
-**Updated Maximum Length** : Updated the maximum length found so far (`jawab`) using the `Math.max()` function.
-
-**Result** : Returned the maximum subarray length satisfying the condition (`jawab`).
+**Result** :
+   - Returned the final count stored in `jawab`.
 
 --- 
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -33,46 +43,46 @@ Keep Solving.:)
 # Complexity
 - Time complexity : $O(n)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$n$ : number of elements in the array
-- Space complexity : $O(u)$
+$n$ : length of the input array `arr`
+- Space complexity : $O(1)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
-$u$ : number of unique elements in the array
 
 # Code
 ```
 class Solution {
-
-    // Static HashMap to store the frequency of elements encountered
-    static HashMap<Integer, Integer> m;
-    
-    // Static variable to store the maximum subarray length satisfying the condition
-    static int jawab;
-
-    // Method to find the maximum subarray length whose sum equals k
-    public int maxSubarrayLength(int[] nums, int k) {
-        // Initializing the HashMap
-        m = new HashMap<>();
-        // Initializing variables to track the start index of the subarray and the maximum length found so far
-        int s = 0;
-        jawab = 0;
-
-        // Traversing the array
-        for (int i = 0; i < nums.length; i++) {
-            // Updating the frequency of the current element in the HashMap
-            m.merge(nums[i], 1, Integer::sum);
-            
-            // Checking if the sum of elements from start index to current index equals k
-            while (m.get(nums[i]) == 1 + k) {
-                // If sum exceeds k, moving the start index forward and updating the HashMap accordingly
-                m.merge(nums[s], -1, Integer::sum);
-                s++;
-            }
-            
-            // Updating the maximum length found so far
-            jawab = Math.max(jawab, i - s + 1);
+    public long countSubarrays(int[] arr, int k) {
+        int length = arr.length;
+        int maxValue = Integer.MIN_VALUE;
+        
+        // Finding the maximum value in the array
+        for (int num : arr) {
+            maxValue = Math.max(maxValue, num);
         }
         
-        // Returning the maximum subarray length satisfying the condition
+        int left = 0, right = 0, ginti = 0;
+        long jawab = 0;
+
+        // Sliding window approach
+        while (right < length) {
+            // Incrementing ginti if the element is equal to the maximum value
+            if (arr[right] == maxValue) {
+                ginti++;
+            }
+            // Checking if ginti is greater than or equal to k
+            if (ginti >= k) {
+                // Moving the left pointer until ginti is less than k
+                while (ginti >= k) {
+                    // Incrementing jawab by the ginti of valid subarrays
+                    jawab += length - right;
+                    // Decrementing ginti if the element at left is equal to the maximum value
+                    if (arr[left] == maxValue) {
+                        ginti--;
+                    }
+                    left++;
+                }
+            }
+            right++;
+        }
         return jawab;
     }
 }
