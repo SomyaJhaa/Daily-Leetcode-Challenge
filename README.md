@@ -4,24 +4,33 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 30-03-24
+## Today's 31-03-24
 
-## [992. Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/description/?envType=daily-question&envId=2024-03-30)
+## [2444. Count Subarrays With Fixed Bounds](https://leetcode.com/problems/count-subarrays-with-fixed-bounds/description/?envType=daily-question&envId=2024-03-31)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-This problem can be solved using a sliding window approach combined with hashing.
+The problem requires counting the number of subarrays within a given range [minK, maxK] where the subarray's elements are also within this range. To efficiently count these subarrays, I can iterate through the array once and keep track of the last invalid index, the last occurrence of minK, and the last occurrence of maxK. By doing so, I can determine the valid subarrays that end at each index.
+
 # Approach
 <!-- Describe your approach to solving the problem. -->
-- I defined a helper function `subarrayAtmostKdistinct` which calculates the number of subarrays with at most `k` distinct elements.
-- The main function `subarraysWithKDistinct` then calculates the number of subarrays with exactly `k` distinct elements by subtracting the count of subarrays with at most `k-1` distinct elements from the count of subarrays with at most `k` distinct elements.
-- I used a sliding window approach where I kept track of the frequency of elements within the current window using a hashmap.
-- I iterated through the array using two pointers `start` and `end`, where `start` marks the start of the current window and `end` marks the end.
-- I incremented `end` until the number of distinct elements within the window exceeded `k`.
-- At each step, I updated the hashmap and calculated the count of subarrays with at most `k` distinct elements using the formula `end - start + 1`.
-- I repeated this process until I reached the end of the array.
 
-By following this approach, I efficiently calculated the number of subarrays with exactly `k` distinct elements.
+- Initialized variables :
+   - `count`: to store the count of valid subarrays.
+   - `lastInvalidIndex`: to keep track of the index of the last element that violates the range condition.
+   - `lastMinIndex`: to store the index of the last occurrence of minK.
+   - `lastMaxIndex`: to store the index of the last occurrence of maxK.
+
+- Iterated through the array `nums` :
+   - Updated `lastInvalidIndex` if the current element is out of the range [minK, maxK].
+   - Updated `lastMinIndex` if the current element is equal to minK.
+   - Updated `lastMaxIndex` if the current element is equal to maxK.
+   - Calculated the count of valid subarrays up to the current index by taking the maximum of 0 and the difference between the minimum of `lastMinIndex` and `lastMaxIndex` and `lastInvalidIndex`.
+   - Added this count to the `count`.
+
+- Returned the total count of valid subarrays.
+
+By following this approach, I can efficiently count the number of valid subarrays within the given range.
 
 --- 
 Have a look at the code , still have any confusion then please let me know in the comments
@@ -29,37 +38,45 @@ Keep Solving.:)
 # Complexity
 - Time complexity : $O(n)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$n$ : length of the input array
-- Space complexity : $O(k)$
+$n$ : length of the input array `nums`
+- Space complexity : $O(1)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
-$k$ : given
+
 # Code
 ```
 class Solution {
-    public static int subarraysWithKDistinct(int[] nums, int k) {
 
-        return subarrayAtmostKdistinct(nums, k) - subarrayAtmostKdistinct(nums, k-1);
-        
-    }
+    // Function to count subarrays within the given range [minK, maxK]
+    public long countSubarrays(int[] nums, int minK, int maxK) {
 
-    public static int subarrayAtmostKdistinct( int[] a, int k){      // this function will give number of subarrays which have at most 'k' distinct elements
-        int count = 0; 
-        HashMap<Integer, Integer> h = new HashMap<>();           // to store the occurences of numbers
-        int start = 0;                                 // to be considered when number of distinct numbers crosses 'k'
-        for( int end = 0; end < a.length; end++){
-            h.put( a[end], h.getOrDefault(a[end], 0) + 1);  
-            while( h.size() > k){
-                int t = h.get(a[start]);    // get the number of occurences of leftmost number
-                h.put(a[start], t-1);       // decrement it's number of occurence
-                if( t-1 == 0){              // if it was the last of it's kind then remove this from hashmap
-                    h.remove(a[start]);
-                } 
-                start++;                // incremented the start
+        // Variable to store the count of valid subarrays
+        long count = 0;
+        // Index of the last element that violates the range condition
+        int lastInvalidIndex = -1;
+        // Index of the last occurrence of minK
+        int lastMinIndex = -1;
+        // Index of the last occurrence of maxK
+        int lastMaxIndex = -1;
+
+        // Iterating through the array
+        for (int i = 0; i < nums.length; ++i) {
+            // Updating lastInvalidIndex if current element is out of range
+            if (nums[i] < minK || nums[i] > maxK) {
+                lastInvalidIndex = i;
             }
-            count += end - start + 1;  // try to visualise with {1,2,1,3,4} with k = 3 then you will get why this (end-start+1) is added : because it will give the all subarrays with distinct numbers less than or equal to 'k'
+            // Updating lastMinIndex if current element is equal to minK
+            if (nums[i] == minK) {
+                lastMinIndex = i;
+            }
+            // Updating lastMaxIndex if current element is equal to maxK
+            if (nums[i] == maxK) {
+                lastMaxIndex = i;
+            }
+            // Calculating the count of valid subarrays up to the current index
+            count += Math.max(0, Math.min(lastMinIndex, lastMaxIndex) - lastInvalidIndex);
         }
+        // Returning the total count of valid subarrays
         return count;
     }
-
 }
 ```
