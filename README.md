@@ -4,41 +4,77 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 04-04-24 
+## Today's 05-04-24 
 
-## [1614. Maximum Nesting Depth of the Parentheses](https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/description/?envType=daily-question&envId=2024-04-04)
+## [1544. Make The String Great](https://leetcode.com/problems/make-the-string-great/description/?envType=daily-question&envId=2024-04-05)
 
-**Intuition:**
-The code aims to find the nesting depth of a given valid parentheses string (VPS). It iterates through the string, counting the opening and closing parentheses to determine the depth of nesting.
+# Intuition
+<!-- Describe your first thoughts on how to solve this problem. -->
+This problem requires removing pairs of adjacent characters from the input string if they have the same letter but different cases.
 
-**Approach:**
-1. Iterate through each character of the string.
-2. If the current character is '(', increment the count of opening parentheses.
-3. If the current character is ')', decrement the count of opening parentheses.
-4. Update the maximum nesting depth encountered so far.
-5. Return the maximum nesting depth.
+To solve the problem, I can use a stack (implemented as a linked list) to keep track of the characters that have not been removed.
 
-**Time Complexity:**
-The time complexity of this solution is O(n), where n is the length of the input string s. This is because we iterate through the string once to determine the nesting depth.
+# Approach
+<!-- Describe your approach to solving the problem. -->
+- I iterated through each character in the input string.
+- For each character :
+  - If the stack is not empty and the current character, when compared with the last character in the stack, forms a pair of characters with the same letter but different cases, I removed the last character from the stack.
+  - If the current character and the next character (if exists) form a pair of characters with the same letter but different cases, I skipped the next character.
+  - Otherwise, I added the current character to the stack.
+- After processing all characters, I converted the characters remaining in the stack to a string, which represents the final result.
+- Finally, I returned the final result string.
 
-**Space Complexity:**
-The space complexity of this solution is O(1) since we are using only a constant amount of extra space to store variables regardless of the size of the input string.
+--- 
+Have a look at the code , still have any confusion then please let me know in the comments
+Keep Solving.:)
 
+# Complexity
+- Time complexity : $O(n)$
+<!-- Add your time complexity here, e.g. $$O(n)$$ -->
+$n$ : length of the input string
+- Space complexity : $O(n)$
+<!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
 class Solution {
-public:
-    int maxDepth(string s) {
-        int ans = 0, ctOpening = 0;
-        for (int i=0; i<s.length(); i++){
-            if (s[i] == '(') ctOpening++;
-            else if (s[i] == ')') ctOpening--;
-            ans = max(ans,ctOpening);
+   
+    public String makeGood(String s) {
+        
+        // Converting the input string to a character array for easier manipulation.
+        char[] chArr = s.toCharArray(); 
+        
+        // Initializing an empty string 'jawab' to store the final result.
+        String jawab="";
+        
+        // Initializing a linked list to store characters.
+        LinkedList<Character> linkedList = new LinkedList<>();
+        
+        // Looping through each character in the input string.
+        for(int i = 0; i < chArr.length; i++){
+            // If the linked list is not empty and the absolute difference between the last character in the linked list and the current character is equal to the difference between 'a' and 'A' (which represents the difference between lowercase and uppercase characters),
+            // Removing the last character from the linked list and continue to the next iteration.
+            if(!linkedList.isEmpty() && Math.abs(linkedList.getLast() - chArr[i]) == 'a' - 'A'){
+                linkedList.removeLast(); 
+                continue;
+            }
+            
+            // If the current character and the next character (if exists) form a pair of characters with the same letter but different cases,
+            // Skipping the next character and continue to the next iteration.
+            if(i + 1 != chArr.length && Math.abs(chArr[i + 1] - chArr[i]) == 'a' - 'A') 
+                i++;
+            else 
+                // Otherwise, adding the current character to the linked list.
+                linkedList.add(chArr[i]);
         }
-        return ans;
+        
+        // Converting the characters remaining in the linked list to a string and append them to the 'jawab' string.
+        while(!linkedList.isEmpty()){
+            jawab+=(linkedList.removeFirst());
+        }
+        
+        // Returning the final result string.
+        return jawab;
     }
-};
-
- 
+}
 ```
