@@ -4,70 +4,84 @@ This is my attempt to make the coding experience easier for you guys so that you
 
 ## Always here to assist you guys.
 
-## Today's 06-04-24 
+## Today's 07-04-24 
 
-## [1249. Minimum Remove to Make Valid Parentheses](https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/description/?envType=daily-question&envId=2024-04-06)
+## [678. Valid Parenthesis String](https://leetcode.com/problems/valid-parenthesis-string/description/?envType=daily-question&envId=2024-04-07)
 
 # Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
-To address this problem, I utilize a stack to manage the indices of unpaired '(' characters. I traverse the string, marking unpaired ')' characters as '#' and popping indices from the stack for each encountered ')', effectively pairing '(' and ')'. Any remaining unpaired '(' characters are marked as '#' after processing. Finally, I remove all '#' characters to obtain the valid string.
+My algorithm aims to determine whether a given string containing parentheses, '*' (wildcards), and other characters forms a valid combination of parentheses. In a valid combination, each open parenthesis '(' must have a corresponding closing parenthesis ')', and wildcards '*' can be either an open parenthesis, a closing parenthesis, or an empty string. 
 
 # Approach
 <!-- Describe your approach to solving the problem. -->
-**Initialized** an empty stack (`parenthesesStack`) to store indices of unpaired '(' characters.
 
-**Traversed** the input string character by character:
-   - If the current character is '(', push its index onto `parenthesesStack`.
-   - If the current character is ')':
-     - If `parenthesesStack` is empty, marked the ')' character as '#'.
-     - If `parenthesesStack` is not empty, popped the top index to pair '(' and ')'.
+- I iterated through each character in the string and maintain two counts :
+  - `minOpen`: Represents the minimum count of open parentheses that must be closed.
+  - `maxOpen`: Represents the maximum count of open parentheses that could be closed.
 
-**Marked** any remaining unpaired '(' characters as '#' by popping from `parenthesesStack`.
+- I traversed the string character by character:
+  - If I encountered an open parenthesis '(', both `minOpen` and `maxOpen` are incremented.
+  - If I encountered a closing parenthesis ')', I decrement `minOpen` (ensuring it doesn't go below 0) and decrement `maxOpen`.
+  - If I encountered a wildcard '*', I decrement `minOpen` (ensuring it doesn't go below 0) and increment `maxOpen` because it can act as an open parenthesis, closing parenthesis, or an empty string.
 
-**Removed** all '#' characters from the modified string.
+- At any point during the iteration, if the count of open parentheses (`maxOpen`) became negative, it means I have encountered more closing parentheses than open ones, which makes the string invalid, so I return `false`.
 
-**Returned** the resulting string, which now contains the minimum removed parentheses to make it valid.
+- Finally, I checked if all open parentheses are closed by verifying if `minOpen` is back to 0. If it is, then the string is valid; otherwise, it's invalid.
+
+- My algorithm returned `true` if the string is valid and `false` otherwise.
 
 --- 
 Have a look at the code , still have any confusion then please let me know in the comments
 Keep Solving.:)
 
 # Complexity
-- Time complexity : $O(s)$
+- Time complexity : $O(n)$
 <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-$s$ :  length of the input string
-- Space complexity : $O(s)$
+$n$ :  length of the input string
+- Space complexity : $O(1)$
 <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
 # Code
 ```
 class Solution {
-    public String minRemoveToMakeValid(String s) {
+  public boolean checkValidString(String str) {
+    
+    // Initializing the minimum and maximum counts of open parentheses
+    int minOpen = 0;  // minimum count of open parentheses
+    int maxOpen = 0;  // maximum count of open parentheses
 
-        Deque<Integer> parenthesesStack = new ArrayDeque<>(); // Stores indices of unpaired '(' characters
-        StringBuilder modifiedString = new StringBuilder(s);
-
-        for (int i = 0; i < s.length(); ++i) {
-            if (modifiedString.charAt(i) == '(') {
-                parenthesesStack.push(i); // Record the unpaired '(' index.
-            } 
-            else if (modifiedString.charAt(i) == ')') {
-                if (parenthesesStack.isEmpty()) {
-                    modifiedString.setCharAt(i, '#'); // Mark the unpaired ')' as '#'.
-                } 
-                else {
-                    parenthesesStack.pop(); // Find a pair!
-                }
-            }
+    // Iterating through each character in the string
+    for (char ch : str.toCharArray()) {
+        // Handling different cases based on the character
+        switch (ch) {
+            
+            case '(':
+                // Incrementing both minimum and maximum counts for open parentheses
+                minOpen++;
+                maxOpen++;
+                break;
+            case ')':
+                // Decreasing the minimum count, but ensure it doesn't go negative
+                minOpen = Math.max(0, --minOpen);
+                // Decreasing the maximum count for open parentheses
+                maxOpen--;
+                break;
+            case '*':
+                // Decreasing the minimum count, but ensure it doesn't go negative
+                minOpen = Math.max(0, --minOpen);
+                // Incrementing the maximum count for open parentheses
+                maxOpen++;
+                break;
         }
-
-        // Marking the unpaired '(' as '#'.
-        while (!parenthesesStack.isEmpty()) {
-            modifiedString.setCharAt(parenthesesStack.pop(), '#');
+        
+        // If the maximum count of open parentheses becomes negative, return false
+        if (maxOpen < 0){
+            return false;
         }
-
-        return modifiedString.toString().replaceAll("#", "");
     }
-}
 
+    // Checking if all open parentheses are closed
+    return minOpen == 0;
+  }
+}
 ```
